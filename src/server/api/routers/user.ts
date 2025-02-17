@@ -6,6 +6,14 @@ export const userRouter = createTRPCRouter({
   register: publicProcedure
     .input(signupSchema)
     .mutation(async ({ ctx, input }) => {
+      console.log("input")
+      console.log(input)
+      console.log("input")
+      const userRole= await ctx.db.userRole.findUnique({
+        where: { name: input.role },
+      });
+      if(!userRole) throw new Error("No user role found");
+
       const existingUser = await ctx.db.user.findUnique({
         where: { email: input.email },
       });
@@ -20,10 +28,11 @@ export const userRouter = createTRPCRouter({
           name: input.name,
           email: input.email,
           hash,
-          salt
+          salt,
+          user_role_id:userRole?.id
         },
       });
 
-      return user;
+      return  user;
     }),
 });

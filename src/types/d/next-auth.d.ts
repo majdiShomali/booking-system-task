@@ -8,7 +8,10 @@ declare module "next-auth" {
       name: string | null;
       email: string | null;
       image?: string | null;
+      verified:boolean
     };
   }
-
+  interface User extends DefaultUser {
+    verified: boolean;
+  }
 }

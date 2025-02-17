@@ -9,18 +9,30 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "email", type: "email" },
+        email: { label: "Email", type: "email" },
+        // password: { label: "Password", type: "password" },
       },
-      authorize: async (credentials) => {
-        const user = await db.user.findUnique({
-          where: { email: credentials?.email },
-        });
-
-        if (user && user.email === credentials?.email) {
-          return user; 
+      async authorize(credentials) {
+  
+        if (!credentials?.email) {
+          throw new Error("Missing email")
         }
 
-        return null;
+        const user = await db.user.findUnique({
+          where: { email: credentials.email },
+          select: { id: true, email: true, hash: true, verified: true }, 
+        });
+
+        if (!user) {
+          throw new Error("User not found");
+        }
+
+        // const isValidPassword = await compare(credentials.password, user.password);
+        // if (!isValidPassword) {
+        //   throw new Error("Invalid credentials");
+        // }
+
+        return user; // The entire user object is returned
       },
     }),
   ],
@@ -28,10 +40,11 @@ export const authOptions = {
     strategy: "jwt" as SessionStrategy, 
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: User }) {
+    async jwt({ token, user }: { token: JWT; user: User }) {
       if (user?.email) {
         token.email = user.email;
         token.id = user.id;
+        token.verified = user.verified;
       }
       return token;
     },
@@ -41,6 +54,7 @@ export const authOptions = {
           ...session.user,
           email: token.email as string,
           id: token.id as string,
+          verified: token.verified as boolean
         };
       }
       return session;

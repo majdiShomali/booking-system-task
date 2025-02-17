@@ -2,30 +2,45 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ERole {
+  PIONEER
+  USER
 }
 
 model User {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
-  email     String  @unique
-  hash      String 
-  salt      String 
+  email     String   @unique
+  hash      String
+  salt      String
   image     String?
+  verified  Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  role         UserRole @relation(fields: [user_role_id], references: [id])
+  user_role_id String
+}
+
+model UserRole {
+  id    String @id @default(uuid())
+  name  ERole  @unique @default(USER)
+  users User[]
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    @@index([name])
+  @@index([name])
 }

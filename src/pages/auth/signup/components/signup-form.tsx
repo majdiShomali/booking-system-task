@@ -15,48 +15,36 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ERole } from "@/types/auth.types";
 import { Icons } from "@/components/icons/icons";
 import { api } from "@/utils/api";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { useMutation } from "@tanstack/react-query";
+import { signIn, useSession } from "next-auth/react";
 
 type SignUpFormProps = {};
 const SignUpForm: React.FC<SignUpFormProps> = ({}) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { data: session } = useSession();
-  console.log("session")
-  console.log(session)
-  console.log("session")
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] =
+  useState<ExtractZODErrors<SignupFormValues> | null>(null);
 
-  const { toast } = useToast();
-  const Router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     name: "",
     password: "",
     phone: "",
-    role: "USER",
+    role: ERole.USER,
   });
+
+  const { toast } = useToast();
+  const Router = useRouter();
+  const { data: session } = useSession();
+  const registerMutation = api.user.register.useMutation();
+
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const [errors, setErrors] =
-    useState<ExtractZODErrors<SignupFormValues> | null>(null);
-
-
-    const createUser = api.user.register.useMutation({
-      onSuccess: (newPost) => {
-        console.log("Post created successfully:", newPost);
-      },
-      onError: (error) => {
-        console.error("Error creating post:", error);
-      },
-    });
-
-    const registerMutation = api.user.register.useMutation();
-
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const result = signupSchema.safeParse(formData);
 
@@ -68,29 +56,38 @@ const SignUpForm: React.FC<SignUpFormProps> = ({}) => {
 
       const user = await registerMutation.mutateAsync(formData);
 
-   console.log(user)
+      if (!user) return;
+      if (user) {
+        const res = await signIn("credentials", {
+          redirect: false,
+          email: user.email,
+          id: user.id,
+        });
+        toast({
+          title: "Registered Successfully",
+          description: `Please enter your registration otp code sent  your email ${formData.email}`,
+          action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
+        });
 
-   const res = await signIn("credentials", {
-    redirect: false,
-    email: user.email,
-    id: user.id,
-  });
-
-  if (res?.error) {
-    console.error("Login failed", res.error);
-  } else {
-    // You can redirect or update the UI after login
-    console.log("Successfully signed in", res);
-  }
+        Router.push("/auth/verify");
+        return;
+      }
 
       toast({
-        title: "Registered Successfully",
-        description: `Please enter your registration otp code sent  your email ${formData.email}`,
+        title: "Registered Failed",
+        description: `Please try again`,
         action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
+        variant: "destructive",
       });
-      // Router.push("/verify");
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Registered Failed",
+        description: `Please try again`,
+        action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -127,7 +124,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({}) => {
         </div>
         <div>
           <RadioGroupItem
-            value={ERole.DRIVER}
+            value={ERole.PIONEER}
             id="driver"
             className="peer sr-only"
             aria-label="driver"
@@ -228,7 +225,13 @@ const SignUpForm: React.FC<SignUpFormProps> = ({}) => {
           )}
         </div>
 
-        <SubmitButton className="mt-3 w-full">{"تسجيل"}</SubmitButton>
+        <SubmitButton
+          loading={loading}
+          loadingTitle="جاري التسجيل"
+          className="mt-3 w-full"
+        >
+          {"تسجيل"}
+        </SubmitButton>
         <p className="text-sm font-light dark:text-primary">
           {"لديك حساب ؟"}{" "}
           <Link

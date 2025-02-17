@@ -14,8 +14,8 @@ export default function VerifyPage() {
         <SpotlightPreview />
       </div>
 
-      <div className="flex items-center justify-center py-6">
-        <div className="mx-auto grid w-[350px] gap-6">
+      <div className="flex items-center justify-center py-6 h-full">
+      <div className="mx-auto grid w-[350px] gap-6">
           <VerifyForm />
         </div>
       </div>

@@ -48,7 +48,6 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ }) => {
     const { data: session } = useSession();
   
 
-
   const handleSubmit = async () => {
     if (formData.otp.length !== 6) return;
     setIsSubmitting(true);
@@ -112,6 +111,7 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ }) => {
     setFormData({ ...formData, [name]: value });
   };
   return (
+    <div className="h-full w-full">
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Verify Your Account</CardTitle>
@@ -193,6 +193,7 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ }) => {
       </CardFooter>
 
     </Card>
+    </div>
   );
 };
 

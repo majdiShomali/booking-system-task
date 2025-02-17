@@ -16,7 +16,7 @@ export default function Home() {
       console.error("Error creating post:", error);
     },
   });
-  
+
   const handleCreatePost = () => {
     // Call the mutation with the post name input
     createPost.mutate({ name: "My New Post" });
@@ -24,14 +24,18 @@ export default function Home() {
   const { toast } = useToast();
 
   return (
-    <div className="flex items-center justify-center w-full h-full">
- <Button onClick={()=>{
-     toast({
-      title: "Message Sent",
-      description: "Thank you for your message",
-      action: <ToastAction altText="undo">Undo</ToastAction>,
-    });
- }}>Toast</Button>
+    <div className="flex h-full w-full items-center justify-center">
+      <Button
+        onClick={() => {
+          toast({
+            title: "Message Sent",
+            description: "Thank you for your message",
+            action: <ToastAction altText="undo">Undo</ToastAction>,
+          });
+        }}
+      >
+        Toast
+      </Button>
     </div>
   );
 }

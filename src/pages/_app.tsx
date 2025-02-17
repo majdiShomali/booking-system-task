@@ -1,14 +1,35 @@
-import { GeistSans } from "geist/font/sans";
 import { type AppType } from "next/app";
+import { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
+import { GeistSans } from "geist/font/sans";
 
 import { api } from "@/utils/api";
-
 import "@/styles/globals.css";
+import Navbar from "@/components/headers/nav";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { Toaster } from "@/providers/toast-provider";
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+
+interface AppProps {
+    session: Session | null; 
+}
+
+const MyApp: AppType<AppProps> = ({ Component, pageProps }) => {
+
   return (
-    <div className={GeistSans.className}>
-      <Component {...pageProps} />
+    <div className={`h-screen w-full overflow-y-auto ${GeistSans.className}`}>
+      <SessionProvider session={pageProps.session}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
+          <Component {...pageProps} />
+          <Toaster />
+        </ThemeProvider>
+      </SessionProvider>
     </div>
   );
 };

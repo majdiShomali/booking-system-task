@@ -5,7 +5,19 @@ import { api } from "@/utils/api";
 
 export default function Home() {
   const hello = api.post.hello.useQuery({ text: "from tRPC" });
-
+  const createPost = api.post.create.useMutation({
+    onSuccess: (newPost) => {
+      console.log("Post created successfully:", newPost);
+    },
+    onError: (error) => {
+      console.error("Error creating post:", error);
+    },
+  });
+  
+  const handleCreatePost = () => {
+    // Call the mutation with the post name input
+    createPost.mutate({ name: "My New Post" });
+  };
   return (
     <>
       <Head>
@@ -45,6 +57,8 @@ export default function Home() {
           <p className="text-2xl text-white">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
           </p>
+
+          <button onClick={()=>handleCreatePost()}>Create</button>
         </div>
       </main>
     </>

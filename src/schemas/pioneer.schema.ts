@@ -8,6 +8,7 @@ const pioneerSchema = z.object({
   bio: z.string().min(1, "bio is required"),
   available: z.boolean().default(false),
   skills: z.array(z.string()).min(1, "At least one skill is required"),
+  additional_information: z.array(z.string()).optional(),
   facebook: z.string().url("Invalid Facebook URL").optional().or(z.literal("")),
   instagram: z.string().url("Invalid Instagram URL").optional().or(z.literal("")),
   twitter: z.string().url("Invalid twitter URL").optional().or(z.literal("")),

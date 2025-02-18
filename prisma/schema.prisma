@@ -23,7 +23,7 @@ model User {
   salt      String
   image     String?
   verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
 
   role         UserRole @relation(fields: [user_role_id], references: [id])
@@ -39,12 +39,24 @@ model Pioneer {
   bio          String
   available    Boolean
   skills       String[] 
+  additional_information  String[] 
   facebook     String
   instagram    String
   twitter    String
 
   user    User   @relation(fields: [user_id], references: [id])
   user_id String @unique
+
+ availableSessions AvailableSession[]
+
+}
+model AvailableSession {
+  id         String   @id @default(uuid())
+  date       DateTime @db.Timestamptz
+  timezone   String   
+  available  Boolean
+  pioneer    Pioneer  @relation(fields: [pioneer_id], references: [id], onDelete: Cascade)
+  pioneer_id  String
 }
 
 model UserRole {

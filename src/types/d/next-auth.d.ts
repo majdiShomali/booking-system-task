@@ -1,3 +1,4 @@
+import { Pioneer } from '@prisma/client';
 // types/next-auth.d.ts
 import NextAuth from "next-auth";
 import { ERole } from "../auth.types";
@@ -18,4 +19,5 @@ declare module "next-auth" {
     verified: boolean;
     role:UserRole
   }
+
 }

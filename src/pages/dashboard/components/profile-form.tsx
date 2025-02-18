@@ -20,6 +20,7 @@ import { ShieldClose } from "lucide-react";
 import SubmitButton from "@/components/ui/submit-button";
 import { api } from "@/utils/api";
 import { Pioneer } from "@prisma/client";
+import MultiTextInput from "./multi-text-input";
 interface ProfileFormProps {
   initialData: Pioneer | null;
 }
@@ -27,7 +28,7 @@ interface ProfileFormProps {
 export default function ProfileForm({ initialData }: ProfileFormProps) {
   const [formData, setFormData] = useState<PioneerFormValues>(
     initialData || {
-      id:"",
+      id: "",
       title: "",
       experience: "",
       bio: "",
@@ -36,6 +37,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
       facebook: "",
       instagram: "",
       twitter: "",
+      additional_information: [],
     },
   );
   const [loading, setLoading] = useState(false);
@@ -79,29 +81,29 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
     setLoading(true);
 
     try {
-        if (formData?.id) {
-          await updatePioneerAction.mutateAsync(formData);
-          toast({
-            title: "Profile updated successfully",
-            description: `Profile has been updated`,
-          });
-        } else {
-            const pioneer =  await createPioneerAction.mutateAsync(formData);
-            setFormData({...pioneer})
-          toast({
-            title: "Profile created successfully",
-            description: `Profile has been created`,
-          });
-        }
-      } catch (error) {
+      if (formData?.id) {
+        await updatePioneerAction.mutateAsync(formData);
         toast({
-          title: "Error",
-          description: `An error occurred, please try again`,
-          variant: "destructive",
+          title: "Profile updated successfully",
+          description: `Profile has been updated`,
         });
-      } finally {
-        setLoading(false);
+      } else {
+        const pioneer = await createPioneerAction.mutateAsync(formData);
+        setFormData({ ...pioneer });
+        toast({
+          title: "Profile created successfully",
+          description: `Profile has been created`,
+        });
       }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `An error occurred, please try again`,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -241,6 +243,19 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                 )}
               </div>
             </div>
+            <MultiTextInput
+              initialData={
+                formData.additional_information?.map((value, id) => {
+                  return { id, value };
+                }) || []
+              }
+              title="معلومات اضافية"
+              onChange={(data) => {
+                setFormData((prev) => {
+                  return { ...prev, additional_information: data };
+                });
+              }}
+            />
           </section>
         </CardContent>
         <CardFooter>

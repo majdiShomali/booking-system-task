@@ -109,6 +109,7 @@ const config: Config = {
     },
   },
   plugins: [addVariablesForColors],
+  
 };
 export default config;
 

@@ -18,6 +18,21 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "Pioneer" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "experience" TEXT NOT NULL,
+    "bio" TEXT NOT NULL,
+    "available" BOOLEAN NOT NULL,
+    "skills" TEXT[],
+    "facebook" TEXT NOT NULL,
+    "instagram" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+
+    CONSTRAINT "Pioneer_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "UserRole" (
     "id" TEXT NOT NULL,
     "name" "ERole" NOT NULL DEFAULT 'USER',
@@ -39,6 +54,9 @@ CREATE TABLE "Post" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Pioneer_user_id_key" ON "Pioneer"("user_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "UserRole_name_key" ON "UserRole"("name");
 
 -- CreateIndex
@@ -46,3 +64,6 @@ CREATE INDEX "Post_name_idx" ON "Post"("name");
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_user_role_id_fkey" FOREIGN KEY ("user_role_id") REFERENCES "UserRole"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Pioneer" ADD CONSTRAINT "Pioneer_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

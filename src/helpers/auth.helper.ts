@@ -8,4 +8,8 @@ function getHash(password: string, salt: string): string {
   return pbkdf2Sync(password, salt, 10000, 512, "sha512").toString("hex");
 }
 
-export default { getSalt, getHash };
+function validatePassword(salt:string,hash:string, password: string): boolean {
+  return getHash(password, salt) === hash;
+};
+
+export default { getSalt, getHash,validatePassword };

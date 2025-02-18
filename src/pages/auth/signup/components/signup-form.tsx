@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
@@ -17,30 +17,32 @@ import { Icons } from "@/components/icons/icons";
 import { api } from "@/utils/api";
 import { signIn, useSession } from "next-auth/react";
 
-type SignUpFormProps = {};
-const SignUpForm: React.FC<SignUpFormProps> = ({}) => {
+type Props = {};
+
+const SignUpForm: React.FC<Props> = ({}) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] =
-  useState<ExtractZODErrors<SignupFormValues> | null>(null);
 
-  const [formData, setFormData] = useState({
+  const [errors, setErrors] =
+    useState<ExtractZODErrors<SignupFormValues> | null>(null);
+
+  const [formData, setFormData] = useState<SignupFormValues>({
     email: "",
     name: "",
     password: "",
-    phone: "",
     role: ERole.USER,
   });
 
   const { toast } = useToast();
   const Router = useRouter();
-  const { data: session } = useSession();
-  const registerMutation = api.user.register.useMutation();
+  const registerAction = api.user.register.useMutation();
 
-
-  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const onChangeHandler = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    },
+    [],
+  );
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,14 +56,14 @@ const SignUpForm: React.FC<SignUpFormProps> = ({}) => {
         return;
       }
 
-      const user = await registerMutation.mutateAsync(formData);
+      const user = await registerAction.mutateAsync(formData);
 
       if (!user) return;
       if (user) {
         const res = await signIn("credentials", {
           redirect: false,
-          email: user.email,
-          id: user.id,
+          email: formData.email,
+          password: formData.password,
         });
         toast({
           title: "Registered Successfully",

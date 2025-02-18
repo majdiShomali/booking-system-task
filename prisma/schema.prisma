@@ -22,12 +22,28 @@ model User {
   hash      String
   salt      String
   image     String?
-  verified  Boolean @default(false)
+  verified  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   role         UserRole @relation(fields: [user_role_id], references: [id])
   user_role_id String
+
+  pioneer Pioneer? @relation
+}
+
+model Pioneer {
+  id           String @id @default(uuid())
+  title        String
+  experience   String
+  bio          String
+  available    Boolean
+  skills       String[] 
+  facebook     String
+  instagram    String
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @unique
 }
 
 model UserRole {

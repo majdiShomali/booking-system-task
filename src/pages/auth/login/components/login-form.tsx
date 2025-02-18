@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -11,124 +11,101 @@ import { Eye, EyeOff, ShieldClose } from "lucide-react";
 import { LoginFormValues, loginSchema } from "@/schemas/login.schema";
 import { Button } from "@/components/ui/button";
 import { getZodErrors, ExtractZODErrors } from "@/schemas";
+import { siteConfig } from "@/config/site";
+import { signIn } from "next-auth/react";
 
-type LogInFormProps = {};
-const LogInForm: React.FC<LogInFormProps> = ({}) => {
-  const { toast } = useToast();
-  const Router = useRouter();
-  const [formData, setFormData] = useState({
+const LogInForm: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<LoginFormValues>({
     email: "",
     password: "",
-    // role: ERole.USER,
   });
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] =
     useState<ExtractZODErrors<LoginFormValues> | null>(null);
+
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const onChangeHandler = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    },
+    [],
+  );
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const result = loginSchema.safeParse(formData);
+
     if (!result.success) {
-      const errors = getZodErrors(loginSchema, formData);
-      setErrors(errors);
+      setErrors(getZodErrors(loginSchema, formData));
       return;
     }
 
-    toast({
-      title: "Error  ",
-      description: "Please try again",
-      action: <ToastAction altText="undo">Undo</ToastAction>,
-      variant: "destructive",
-    });
-    return;
+    setLoading(true);
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (res?.error) {
+        toast({
+          title: "Login Failed",
+          description: "Invalid credentials, please try again.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Login Successful",
+          description: `Welcome back, ${formData.email}!`,
+        });
+        router.push("/");
+      }
+    } catch (error) {
+      toast({
+        title: "An unexpected error occurred",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="h-full w-full">
-      {/* <RadioGroup
-        onValueChange={(value) => {
-          setFormData((prev) => {
-            return {
-              ...prev,
-              role: value as ERole,
-            };
-          });
-        }}
-        id="role"
-        name="role"
-        defaultValue={ERole.USER}
-        className="grid grid-cols-2 gap-4"
-      >
-        <div>
-          <RadioGroupItem
-            value={ERole.USER}
-            id="user"
-            className="peer sr-only"
-            aria-label="user"
-          />
-          <Label
-            htmlFor="user"
-            className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-transparent p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-          >
-            <Icons.UserIcon className="mb-3 h-6 w-6" />
-            User
-          </Label>
-        </div>
-        <div>
-          <RadioGroupItem
-            value={ERole.DRIVER}
-            id="driver"
-            className="peer sr-only"
-            aria-label="driver"
-          />
-          <Label
-            htmlFor="driver"
-            className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-transparent p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary "
-          >
-            <Icons.DriverIcon className="mb-3 h-6 w-6" />
-            Driver
-          </Label>
-        </div>
-      </RadioGroup> */}
-
       <form
         onSubmit={onSubmit}
-        className="flex w-full flex-col items-center justify-center gap-2"
+        className="flex w-full flex-col items-center gap-2"
       >
         <div className="relative w-full space-y-2">
-          <Label htmlFor="username">البريد الاكتروني</Label>
+          <Label htmlFor="email">البريد الإلكتروني</Label>
           <Input
-            // required
-            title="email"
             name="email"
-            type="text"
+            type="email"
             onChange={onChangeHandler}
             value={formData.email}
             autoComplete="email"
           />
           {errors?.email && (
-            <p className="flex items-center justify-start text-sm text-red-500">
-              <span className="text-xs text-red-500">
-                <ShieldClose size={15} />{" "}
-              </span>
-              {errors?.email}
+            <p className="flex items-center text-sm text-red-500">
+              <ShieldClose size={15} className="mr-1" />
+              {errors.email}
             </p>
           )}
         </div>
+
         <div className="relative w-full space-y-2">
-          <Label htmlFor="username">كلمة المرور</Label>
-          <div className="relative h-fit">
+          <Label htmlFor="password">كلمة المرور</Label>
+          <div className="relative">
             <Input
-              title="password"
               name="password"
               type={showPassword ? "text" : "password"}
               onChange={onChangeHandler}
-              autoComplete="password"
+              autoComplete="current-password"
               value={formData.password}
               className="pl-10"
             />
@@ -136,7 +113,7 @@ const LogInForm: React.FC<LogInFormProps> = ({}) => {
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute left-0 top-0 translate-y-0.5"
+              className="absolute left-0 top-1/2 -translate-y-1/2 transform"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
@@ -146,36 +123,38 @@ const LogInForm: React.FC<LogInFormProps> = ({}) => {
               )}
             </Button>
           </div>
-
           {errors?.password && (
-            <p className="flex items-center justify-start text-sm text-red-500">
-              <span className="text-xs text-red-500">
-                <ShieldClose size={15} />{" "}
-              </span>
+            <p className="flex items-center text-sm text-red-500">
+              <ShieldClose size={15} className="mr-1" />
               {errors.password}
             </p>
           )}
         </div>
 
-        <SubmitButton className="mt-3 w-full" title="Sign in">
+        <SubmitButton
+          loading={loading}
+          loadingTitle="جاري التسجيل"
+          className="mt-3 w-full"
+        >
           تسجيل الدخول
         </SubmitButton>
-        <p className="text-sm font-light dark:text-primary">
-          {" انشاء حساب جديد؟"}{" "}
+
+        <p className="text-sm font-light">
+          ليس لديك حساب؟
           <Link
-            href={`/auth/signup`}
-            className="font-medium text-primary hover:underline dark:text-primary"
+            href={siteConfig.pages.signup}
+            className="font-medium text-primary hover:underline"
           >
-            {"تسجيل "}
+            تسجيل
           </Link>
         </p>
-        <p className="text-sm font-light dark:text-primary">
-          {" نسيت كلمة المرور؟"}{" "}
+        <p className="text-sm font-light">
+          نسيت كلمة المرور؟
           <Link
             href="/auth/forgot-password"
-            className="font-medium text-primary hover:underline dark:text-primary"
+            className="font-medium text-primary hover:underline"
           >
-            {"اعادة تعين كلمة المرور"}
+            إعادة تعيين كلمة المرور
           </Link>
         </p>
       </form>

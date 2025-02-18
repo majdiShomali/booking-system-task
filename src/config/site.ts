@@ -10,6 +10,16 @@ export const siteConfig = {
   },
   pages:{
     login:"/auth/login",
+    signup:"/auth/signup",
+    PIONEER:{
+      home:"/dashboard",
+      profile:"/dashboard/profile",
+    },
+    USER:{
+      home:"/",
+      profile:"/profile"
+
+    }
   }
 }
 

@@ -4,6 +4,8 @@ import { db } from "@/server/db";
 import { SessionStrategy } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { ERole } from "@/types/auth.types";
+import authHelper from "@/helpers/auth.helper";
+import { siteConfig } from "@/config/site";
 
 export const authOptions = {
   providers: [
@@ -11,42 +13,45 @@ export const authOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        // Uncomment if you need password authentication
-        // password: { label: "Password", type: "password" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email) {
-          return null; 
+          return null;
         }
 
         try {
           const user = await db.user.findUnique({
             where: { email: credentials.email },
             include: {
-              role: true, 
+              role: true,
             },
           });
 
           if (!user) {
-            return null; 
+            return null;
           }
 
-          // Uncomment if you need password validation
-          // const isValidPassword = await compare(credentials.password, user.password);
-          // if (!isValidPassword) {
-          //   return null; // Return null if password is invalid
-          // }
+          const isValidPassword = authHelper.validatePassword(
+            user.salt,
+            user.hash,
+            credentials.password,
+          );
 
-          return user; // Return the user object if authentication succeeds
+          if (!isValidPassword) {
+            return null;
+          }
+
+          return user; 
         } catch (error) {
           console.error("Authorization error:", error);
-          return null; 
+          return null;
         }
       },
     }),
   ],
   session: {
-    strategy: "jwt" as SessionStrategy, 
+    strategy: "jwt" as SessionStrategy,
   },
   callbacks: {
     async jwt({ token, user }: { token: JWT; user: User }) {
@@ -54,7 +59,7 @@ export const authOptions = {
         token.email = user.email;
         token.id = user.id;
         token.verified = user.verified;
-        token.role = user.role?.name; 
+        token.role = user.role?.name;
       }
       return token;
     },
@@ -65,17 +70,17 @@ export const authOptions = {
           email: token.email as string,
           id: token.id as string,
           verified: token.verified as boolean,
-          role: token.role as ERole, 
+          role: token.role as ERole,
         };
       }
       return session;
     },
   },
   pages: {
-    signIn: "/auth/signin", 
+    signIn: siteConfig.pages.login,
+    signUp: siteConfig.pages.signup,
   },
-  secret: process.env.NEXTAUTH_SECRET, 
-
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);

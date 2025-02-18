@@ -1,7 +1,8 @@
-enum ERole {
+  enum ERole {
     USER = "USER",
     PIONEER = "PIONEER",
   }
+
 
 
 

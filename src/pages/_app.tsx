@@ -8,16 +8,44 @@ import "@/styles/globals.css";
 import Navbar from "@/components/headers/nav";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/providers/toast-provider";
-
+// import PioneerSidebar from "@/components/headers/sidebar/pioneer-sidebar";
+// import { SidebarProvider, SidebarTrigger } from "@/components/ui/side-bar";
 
 interface AppProps {
-    session: Session | null; 
+  session: Session | null;
 }
 
-const MyApp: AppType<AppProps> = ({ Component, pageProps }) => {
+const MyApp: AppType<AppProps> = ({ Component, pageProps, router }) => {
+
+  // const defaultLayout = (page: React.ReactNode) => {
+  //   return (
+  //     <div>
+  //       <Navbar />
+  //       {page}
+  //     </div>
+  //   );
+  // };
+
+  // const dashboardLayout = (page: React.ReactNode) => {
+  //   return (
+  //     <div>
+  //     <Navbar />
+  //     {page}
+  //   </div>
+  //   );
+  // };
+
+  // // Determine which layout to use based on the route
+  // const getLayout = () => {
+  //   if (router.pathname.startsWith("/dashboard")) {
+  //     return dashboardLayout(<Component {...pageProps} />);
+  //   } else {
+  //     return defaultLayout(<Component {...pageProps} />);
+  //   }
+  // };
 
   return (
-    <div className={`h-screen w-full overflow-y-auto ${GeistSans.className}`}>
+    <div className={`h-screen w-full overflow-y-auto custom-scrollbar ${GeistSans.className}`}>
       <SessionProvider session={pageProps.session}>
         <ThemeProvider
           attribute="class"
@@ -25,8 +53,8 @@ const MyApp: AppType<AppProps> = ({ Component, pageProps }) => {
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <Component {...pageProps} />
+             <Navbar />
+             <Component {...pageProps} />
           <Toaster />
         </ThemeProvider>
       </SessionProvider>

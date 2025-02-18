@@ -1,13 +1,16 @@
 export const siteConfig = {
-  name: "",
+  name: "المستشار",
   url: "",
   ogImage: "",
   description:
-    "",
+    "ابداء رحلتك مع المستشار ",
   links: {
     twitter: "",
     github: "",
   },
+  pages:{
+    login:"/auth/login",
+  }
 }
 
 export type SiteConfig = typeof siteConfig

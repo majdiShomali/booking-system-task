@@ -2,11 +2,10 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeSwitcher } from "./mode-switcher";
-import layoutConstants from "@/constants/layout.constants";
-import infoConstants from "@/constants/info.constants";
 import { NavSheet } from "./nav-sheet";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
+import { siteConfig } from "@/config/site";
 const Navbar = () => {
       const { data: session } = useSession();
   
@@ -27,7 +26,7 @@ const Navbar = () => {
         />
 
         <p className="text-lg font-semibold uppercase">
-          {infoConstants.info.name}
+          {siteConfig.name}
         </p>
       </Link>
 
@@ -40,7 +39,7 @@ const Navbar = () => {
           :
           <Link
           className="hidden items-center justify-end gap-5 lg:flex"
-          href={layoutConstants.layout.pageLinks.login}
+          href={siteConfig.pages.login}
         >
           <Button>تسجيل الدخول</Button>
           </Link>

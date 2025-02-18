@@ -12,11 +12,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { META_THEME_COLORS } from "@/config/site"
-import layoutConstants from "@/constants/layout.constants"
 import { useMetaColor } from "@/hooks/use-meta-color"
-import { Menu, Puzzle, Briefcase, Folder, Info, Mail } from "lucide-react"
+import { Menu} from "lucide-react"
 import { useTheme } from "next-themes"
-import Link from "next/link"
 import { useCallback, useState } from "react"
 
 export function NavSheet() {

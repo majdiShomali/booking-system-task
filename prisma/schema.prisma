@@ -41,6 +41,7 @@ model Pioneer {
   skills       String[] 
   facebook     String
   instagram    String
+  twitter    String
 
   user    User   @relation(fields: [user_id], references: [id])
   user_id String @unique

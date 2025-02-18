@@ -86,7 +86,8 @@ export default function Calendar({
         <Button onClick={handlePrevMonth} className="p-2">
           <ChevronRight className="h-5 w-5" />
         </Button>
-        <h3 className="font-medium">{currentDate.toLocaleDateString(locale, { month: "long", year: "numeric" })}</h3>
+        <h3 className="font-medium">{currentDate.toLocaleDateString(locale, { month: "long", year: "numeric",  calendar: "gregory",
+ })}</h3>
         <Button onClick={handleNextMonth} className="p-2">
           <ChevronLeft className="h-5 w-5" />
         </Button>

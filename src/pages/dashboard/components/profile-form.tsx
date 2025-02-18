@@ -1,6 +1,6 @@
 "use client";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -19,24 +19,37 @@ import { useToast } from "@/hooks/use-toast";
 import { ShieldClose } from "lucide-react";
 import SubmitButton from "@/components/ui/submit-button";
 import { api } from "@/utils/api";
-import { ToastAction } from "@/components/ui/toast";
+import { Pioneer } from "@prisma/client";
+interface ProfileFormProps {
+  initialData: Pioneer | null;
+}
 
-export default function ProfileForm() {
-  const [formData, setFormData] = useState<PioneerFormValues>({
-    title: "",
-    experience: "",
-    bio: "",
-    available: false,
-    skills: [],
-    facebook: "",
-    instagram: "",
-  });
+export default function ProfileForm({ initialData }: ProfileFormProps) {
+  const [formData, setFormData] = useState<PioneerFormValues>(
+    initialData || {
+      id:"",
+      title: "",
+      experience: "",
+      bio: "",
+      available: false,
+      skills: [],
+      facebook: "",
+      instagram: "",
+      twitter: "",
+    },
+  );
   const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] =
     useState<ExtractZODErrors<PioneerFormValues> | null>(null);
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -53,6 +66,7 @@ export default function ProfileForm() {
     setFormData((prev) => ({ ...prev, skills: selectedSkills }));
   };
   const createPioneerAction = api.pioneer.create.useMutation();
+  const updatePioneerAction = api.pioneer.update.useMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,26 +79,29 @@ export default function ProfileForm() {
     setLoading(true);
 
     try {
-      const pioneer = await createPioneerAction.mutateAsync(formData);
-
-      console.log("pioneer");
-      console.log(pioneer);
-      console.log("pioneer");
-      toast({
-        title: "created Successfully",
-        description: `pioneer created Successfully`,
-        action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
-      });
-    } catch (error) {
-      toast({
-        title: "create Failed",
-        description: `Please try again`,
-        action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+        if (formData?.id) {
+          await updatePioneerAction.mutateAsync(formData);
+          toast({
+            title: "Profile updated successfully",
+            description: `Profile has been updated`,
+          });
+        } else {
+            const pioneer =  await createPioneerAction.mutateAsync(formData);
+            setFormData({...pioneer})
+          toast({
+            title: "Profile created successfully",
+            description: `Profile has been created`,
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: `An error occurred, please try again`,
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
   };
 
   return (
@@ -206,11 +223,32 @@ export default function ProfileForm() {
                 )}
               </div>
             </div>
+            <div className="w-full space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="twitter">حساب twitter </Label>
+                <Input
+                  id="twitter"
+                  name="twitter"
+                  value={formData.twitter}
+                  onChange={handleInputChange}
+                  placeholder="https://twitter.com/username"
+                />
+                {errors?.twitter && (
+                  <p className="flex items-center text-sm text-red-500">
+                    <ShieldClose size={15} className="mr-1" />
+                    {errors.twitter}
+                  </p>
+                )}
+              </div>
+            </div>
           </section>
         </CardContent>
         <CardFooter>
-          <SubmitButton loadingTitle="جاري التاكييد" loading={loading}>
-            {"تاكيد"}
+          <SubmitButton
+            loadingTitle={formData.id ? "...تحديث" : "...انشاء"}
+            loading={loading}
+          >
+            {formData.id ? "تحديث" : "انشاء"}
           </SubmitButton>
         </CardFooter>
       </form>

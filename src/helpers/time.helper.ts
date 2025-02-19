@@ -33,6 +33,6 @@ const convertDateToTime = (date: Date | string) => {
 const timeHelper = {
   convertUserInputToUTC,
   convertLocalDateToUTC,
-  convertDateToTime
+  convertDateToTime,
 }
 export default timeHelper ;

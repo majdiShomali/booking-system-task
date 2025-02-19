@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
@@ -9,14 +9,17 @@ import { useRouter } from "next/navigation";
 import SubmitButton from "@/components/ui/submit-button";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, ShieldClose } from "lucide-react";
-import { SignupFormValues, signupSchema, signupSchemaInitialData } from "@/schemas/signup.schema";
+import {
+  SignupFormValues,
+  signupSchema,
+  signupSchemaInitialData,
+} from "@/schemas/signup.schema";
 import { ExtractZODErrors, getZodErrors } from "@/schemas";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ERole } from "@/types/auth.types";
 import { Icons } from "@/components/icons/icons";
 import { api } from "@/utils/api";
-import { signIn } from "next-auth/react";
-
+import { signIn, useSession } from "next-auth/react";
 
 const SignUpForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -25,11 +28,24 @@ const SignUpForm: React.FC = () => {
   const [errors, setErrors] =
     useState<ExtractZODErrors<SignupFormValues> | null>(null);
 
-  const [formData, setFormData] = useState<SignupFormValues>(signupSchemaInitialData);
+  const [formData, setFormData] = useState<SignupFormValues>(
+    signupSchemaInitialData,
+  );
 
   const { toast } = useToast();
   const Router = useRouter();
   const registerAction = api.user.register.useMutation();
+  const session = useSession();
+
+  useEffect(() => {
+    if (session.data?.user) {
+      const role = session.data.user.role;
+      if (role === ERole.USER) {
+        Router.push("/");
+      }
+      Router.push("/dashboard/profile");
+    }
+  }, [session.data?.user]);
 
   const onChangeHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,8 +80,6 @@ const SignUpForm: React.FC = () => {
           description: `Please enter your registration otp code sent  your email ${formData.email}`,
           action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
         });
-
-        Router.push("/");
         return;
       }
 
@@ -198,7 +212,6 @@ const SignUpForm: React.FC = () => {
               value={formData.password}
               className="pl-10"
               placeholder="Password@1234"
-
             />
             <Button
               type="button"
@@ -237,7 +250,7 @@ const SignUpForm: React.FC = () => {
           {"لديك حساب ؟"}
           <Link
             href={`/auth/login`}
-            className="font-medium text-primary hover:underline"
+            className="font-medium text-primary hover:underline px-2"
           >
             {"تسجيل الدخول"}
           </Link>

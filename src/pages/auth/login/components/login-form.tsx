@@ -1,28 +1,46 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/ui/submit-button";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, ShieldClose } from "lucide-react";
-import { LoginFormValues, loginSchema, loginSchemaInitialData } from "@/schemas/login.schema";
+import {
+  LoginFormValues,
+  loginSchema,
+  loginSchemaInitialData,
+} from "@/schemas/login.schema";
 import { Button } from "@/components/ui/button";
 import { getZodErrors, ExtractZODErrors } from "@/schemas";
 import { siteConfig } from "@/config/site";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { ERole } from "@prisma/client";
 
 const LogInForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<LoginFormValues>(loginSchemaInitialData);
+  const [formData, setFormData] = useState<LoginFormValues>(
+    loginSchemaInitialData,
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] =
     useState<ExtractZODErrors<LoginFormValues> | null>(null);
+  const session = useSession();
 
   const { toast } = useToast();
   const router = useRouter();
+
+  useEffect(() => {
+    if (session.data?.user) {
+      const role = session.data.user.role;
+      if (role === ERole.USER) {
+        router.push("/");
+      }
+      router.push("/dashboard/profile");
+    }
+  }, [session.data?.user]);
 
   const onChangeHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +77,6 @@ const LogInForm: React.FC = () => {
           title: "Login Successful",
           description: `Welcome back, ${formData.email}!`,
         });
-        router.push("/");
       }
     } catch (error) {
       toast({
@@ -107,7 +124,6 @@ const LogInForm: React.FC = () => {
               value={formData.password}
               className="pl-10"
               placeholder="Password@1234"
-
             />
             <Button
               type="button"
@@ -143,20 +159,12 @@ const LogInForm: React.FC = () => {
           ليس لديك حساب؟
           <Link
             href={siteConfig.pages.signup}
-            className="font-medium text-primary hover:underline"
+            className="font-medium text-primary hover:underline space-x-2 px-2"
           >
             تسجيل
           </Link>
         </p>
-        <p className="text-sm font-light">
-          نسيت كلمة المرور؟
-          <Link
-            href="/auth/forgot-password"
-            className="font-medium text-primary hover:underline"
-          >
-            إعادة تعيين كلمة المرور
-          </Link>
-        </p>
+
       </form>
     </section>
   );

@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { api } from "@/utils/api";
 import timeHelper from "@/helpers/time.helper";
 import type { TPeriod } from "@/types/types";
+import { Skeleton } from "../ui/skeleton";
 
 interface AvailableTime {
   hour: string;
@@ -24,9 +25,11 @@ interface AvailableTime {
 export function AvailableTimes({
   initialTimes = [],
   selectedDate,
+  loading
 }: {
   selectedDate: Date;
   initialTimes?: AvailableTime[];
+  loading:boolean
 }) {
 
   const [times, setTimes] = React.useState<AvailableTime[]>(initialTimes);
@@ -94,28 +97,30 @@ export function AvailableTimes({
     }
   };
 
-  const removeTime = (index: number) => {
-    setTimes(times.filter((_, i) => i !== index));
-    toast({
-      title: "Time removed",
-      description: "The selected time has been removed from the list.",
-    });
-  };
+  // const removeTime = (index: number) => {
+  //   setTimes(times.filter((_, i) => i !== index));
+  //   toast({
+  //     title: "Time removed",
+  //     description: "The selected time has been removed from the list.",
+  //   });
+  // };
 
 
-
+if(loading){
+  return <AvailableTimesLoadingSkeleton/>
+}
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Available Times</h2>
-      <div className="flex flex-wrap gap-2">
-        {times.map((time, index) => (
+      <h2 className="text-lg font-semibold">{"الاوفات المتاحة"} </h2>
+      <div className="flex flex-wrap gap-2 w-96">
+        {times?.map((time, index) => (
           <div
             key={index}
             className="flex items-center rounded-md bg-secondary p-2 text-secondary-foreground"
           >
-            <span>{`${time.hour} ${time.period}`}</span>
-            <Button
+            <span>{`${time.period} ${time.hour}:00 `}</span>
+            {/* <Button
               variant="ghost"
               size="icon"
               className="ml-2 h-4 w-4"
@@ -123,9 +128,10 @@ export function AvailableTimes({
             >
               <X className="h-3 w-3" />
               <span className="sr-only">Remove time</span>
-            </Button>
+            </Button> */}
           </div>
         ))}
+        {times?.length == 0 ?<p> لا يوجد اوقات متاحة </p>:null}
       </div>
       <div className="flex items-center space-x-2">
         <Input
@@ -149,7 +155,25 @@ export function AvailableTimes({
             <SelectItem value="PM">PM</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={addTime}>Add Time</Button>
+        <Button onClick={addTime}>{"اضف وقت"}</Button>
+      </div>
+    </div>
+  );
+}
+
+function AvailableTimesLoadingSkeleton() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-7 w-40" /> 
+      <div className="flex flex-wrap gap-2 w-96">
+        {[...Array(5)].map((_, index) => (
+          <Skeleton key={index} className="h-8 w-24 rounded-md" /> 
+        ))}
+      </div>
+      <div className="flex items-center space-x-2">
+        <Skeleton className="h-10 w-20" /> 
+        <Skeleton className="h-10 w-[70px]" /> 
+        <Skeleton className="h-10 w-24" /> 
       </div>
     </div>
   );

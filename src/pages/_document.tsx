@@ -16,10 +16,15 @@ class MyDocument extends Document {
           <meta charSet="UTF-8" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-          <body className="h-full">
-            <Main />
-            <NextScript />
-          </body>
+        <body className=" h-screen overflow-y-auto custom-scrollbar ">
+          <Main />
+          <NextScript />
+          <footer className="bg-accent py-6">
+            <div className="container mx-auto px-4 text-center text-muted-foreground">
+              © 2025 حجز الرواد. جميع الحقوق محفوظة.
+            </div>
+          </footer>
+        </body>
       </Html>
     );
   }

@@ -14,7 +14,7 @@ interface AppProps {
 const MyApp: AppType<AppProps> = ({ Component, pageProps }) => {
   return (
     <div
-      className={`custom-scrollbar h-screen w-full overflow-y-auto ${GeistSans.className}`}
+      className={`h-full w-full  ${GeistSans.className}`}
     >
       <SessionProvider session={pageProps.session}>
         <ThemeProvider
@@ -24,14 +24,9 @@ const MyApp: AppType<AppProps> = ({ Component, pageProps }) => {
           disableTransitionOnChange
         >
           <Navbar />
-          <main className="h-full w-full">
           <Component {...pageProps} />
-          </main>
-          <footer className="bg-accent py-6">
-            <div className="container mx-auto px-4 text-center text-muted-foreground">
-              © 2025 حجز الرواد. جميع الحقوق محفوظة.
-            </div>
-          </footer>
+   
+
           <Toaster />
         </ThemeProvider>
       </SessionProvider>

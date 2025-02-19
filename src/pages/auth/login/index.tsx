@@ -4,7 +4,7 @@ import { SpotlightPreview } from "@/components/auth/SpotlightPreview";
 export default function LoginPage() {
 
   return (
-    <div className="w-full lg:grid h-full lg:grid-cols-2  ">
+    <div className="w-full lg:grid h-screen lg:grid-cols-2  ">
     <div className="hidden bg-muted lg:block relative">
       <SpotlightPreview  />
     </div>

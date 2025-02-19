@@ -35,14 +35,14 @@ export const pioneerRouter = createTRPCRouter({
     .input(z.object({ date: z.date() }))
     .query(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      return pioneerService.getPioneerAvailableDaySession(user.id, input.date);
+      return pioneerService.getCurrentPioneerAvailableDaySession(user.id, input.date);
     }),
 
   getCurrentPioneerAvailableMonthSession: pioneerProcedure
     .input(z.object({ date: z.date() }))
     .query(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      return pioneerService.getPioneerAvailableMonthSession(
+      return pioneerService.getCurrentPioneerAvailableMonthSession(
         user.id,
         input.date,
       );

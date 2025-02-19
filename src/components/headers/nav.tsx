@@ -2,7 +2,6 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeSwitcher } from "./mode-switcher";
-import { NavSheet } from "./nav-sheet";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { siteConfig } from "@/config/site";
@@ -36,15 +35,13 @@ const Navbar = () => {
           <UserMenu />
         ) : (
           <Link
-            className="hidden items-center justify-end gap-5 lg:flex"
+            className="items-center justify-end gap-5"
             href={siteConfig.pages.login}
           >
             <Button>تسجيل الدخول</Button>
           </Link>
         )}
-        <div className="flex w-1/3 items-center justify-end pr-2 lg:hidden">
-          <NavSheet />
-        </div>
+ 
       </section>
     </nav>
   );

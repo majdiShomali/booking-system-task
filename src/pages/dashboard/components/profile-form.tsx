@@ -23,13 +23,16 @@ import { api } from "@/utils/api";
 import type { Pioneer } from "@prisma/client";
 import MultiSelect from "@/components/ui/multi-select";
 import MultiTextInput from "@/components/ui/multi-text-input";
+import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProfileFormProps {
   initialData: Pioneer | null;
-  mode: "update" | "create"
+  mode: "update" | "create";
+  isLoading:boolean
 }
 
-export default function ProfileForm({initialData,mode}:ProfileFormProps) {
+export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProps) {
   const createPioneerAction = api.pioneer.create.useMutation();
   const updatePioneerAction = api.pioneer.update.useMutation();
 
@@ -43,6 +46,7 @@ export default function ProfileForm({initialData,mode}:ProfileFormProps) {
     useState<ExtractZODErrors<CreatePioneerFormValues> | null>(null);
 
   const { toast } = useToast();
+  const Router = useRouter();
 
   useEffect(() => {
     if (initialData) {
@@ -100,6 +104,7 @@ export default function ProfileForm({initialData,mode}:ProfileFormProps) {
           title: "Profile created successfully",
           description: `Profile has been created`,
         });
+        Router.push('/dashboard')
       }
     } catch (error) {
       toast({
@@ -112,8 +117,9 @@ export default function ProfileForm({initialData,mode}:ProfileFormProps) {
     }
   };
 
+  if(isLoading) return <LoadingSkeleton/>
   return (
-    <Card className="w-full max-w-4xl">
+    <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle>{"معلومات الشخصية"}</CardTitle>
       </CardHeader>
@@ -295,4 +301,92 @@ export default function ProfileForm({initialData,mode}:ProfileFormProps) {
       </form>
     </Card>
   );
+}
+
+
+function LoadingSkeleton() {
+  return (
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader>
+        <CardTitle>
+          <Skeleton className="h-8 w-48" />
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-start justify-start gap-5 lg:flex-row">
+        <section className="flex h-full w-full flex-col items-start gap-5 lg:w-1/2">
+          <div className="w-full space-y-2">
+            <Label>
+              <Skeleton className="h-4 w-20" />
+            </Label>
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="flex items-center justify-center w-full gap-2">
+            <div className="w-full space-y-2">
+              <Label>
+                <Skeleton className="h-4 w-20" />
+              </Label>
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="w-full space-y-2">
+              <Label>
+                <Skeleton className="h-4 w-20" />
+              </Label>
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
+          <div className="w-full space-y-2">
+            <Label>
+              <Skeleton className="h-4 w-32" />
+            </Label>
+            <Skeleton className="h-40 w-full" />
+          </div>
+          <div className="mt-2 flex w-full items-center gap-2 space-x-2">
+            <Skeleton className="h-5 w-5" />
+            <Label>
+              <Skeleton className="h-4 w-16" />
+            </Label>
+          </div>
+        </section>
+        <section className="flex h-full w-full flex-col items-start justify-start gap-5 lg:w-1/2">
+          <div className="w-full space-y-2">
+            <Label>
+              <Skeleton className="h-4 w-24" />
+            </Label>
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <div className="w-full space-y-4">
+            <div className="space-y-2">
+              <Label>
+                <Skeleton className="h-4 w-32" />
+              </Label>
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2">
+              <Label>
+                <Skeleton className="h-4 w-32" />
+              </Label>
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
+          <div className="w-full space-y-4">
+            <div className="space-y-2">
+              <Label>
+                <Skeleton className="h-4 w-32" />
+              </Label>
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
+          <div className="w-full space-y-2">
+            <Label>
+              <Skeleton className="h-4 w-36" />
+            </Label>
+            <Skeleton className="h-20 w-full" />
+          </div>
+        </section>
+      </CardContent>
+      <CardFooter>
+        <Skeleton className="h-10 w-24" />
+      </CardFooter>
+    </Card>
+  )
 }

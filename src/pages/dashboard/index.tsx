@@ -3,7 +3,9 @@ import Calendar from "@/components/calendar/calendar";
 import ProfileCard from "@/components/calendar/profile-card";
 import TimeSlots from "@/components/calendar/time-slots";
 import { SidebarProvider } from "@/components/ui/side-bar";
+import timeHelper from "@/helpers/time.helper";
 import { TPioneer } from "@/types/pioneer.types";
+import { api } from "@/utils/api";
 import { useCallback, useState } from "react";
 
 export default function DashboardPage() {
@@ -14,19 +16,48 @@ export default function DashboardPage() {
   const handleBooking = (selectedTime: string) => {
     console.log("Booking session for:", selectedTime);
   };
-  const events = [
-    new Date(2025, 1, 6),
-    new Date(2025, 1, 15),
-  ];
+  const events = [new Date(2025, 1, 6), new Date(2025, 1, 15)];
   const availableSlots = [
-    {date:"Wed Feb 6 2025 00:00:00 GMT+0300 (GMT+03:00)" ,time: "11:00 AM", available: true },
-    {date:"Wed Feb 6 2025 00:00:00 GMT+0300 (GMT+03:00)" , time: "10:00 AM", available: true },
-    {date:"Wed Feb 6 2025 00:00:00 GMT+0300 (GMT+03:00)" , time: "09:00 AM", available: true },
-    {date:"Wed Feb 6 2025 00:00:00 GMT+0300 (GMT+03:00)" , time: "02:00 PM", available: true },
-    {date:"Wed Feb 15 2025 00:00:00 GMT+0300 (GMT+03:00)" , time: "01:00 PM", available: true },
-    {date:"Wed Feb 15 2025 00:00:00 GMT+0300 (GMT+03:00)" , time: "12:00 PM", available: true },
-    {date:"Wed Feb 15 2025 00:00:00 GMT+0300 (GMT+03:00)" , time: "04:00 PM", available: true },
-    {date:"Wed Feb 15 2025 00:00:00 GMT+0300 (GMT+03:00)" , time: "03:00 PM", available: true },
+    {
+      date: "Wed Feb 6 2025 00:00:00 GMT+0300 (GMT+03:00)",
+      time: "11:00 AM",
+      available: true,
+    },
+    {
+      date: "Wed Feb 6 2025 00:00:00 GMT+0300 (GMT+03:00)",
+      time: "10:00 AM",
+      available: true,
+    },
+    {
+      date: "Wed Feb 6 2025 00:00:00 GMT+0300 (GMT+03:00)",
+      time: "09:00 AM",
+      available: true,
+    },
+    {
+      date: "Wed Feb 6 2025 00:00:00 GMT+0300 (GMT+03:00)",
+      time: "02:00 PM",
+      available: true,
+    },
+    {
+      date: "Wed Feb 15 2025 00:00:00 GMT+0300 (GMT+03:00)",
+      time: "01:00 PM",
+      available: true,
+    },
+    {
+      date: "Wed Feb 15 2025 00:00:00 GMT+0300 (GMT+03:00)",
+      time: "12:00 PM",
+      available: true,
+    },
+    {
+      date: "Wed Feb 15 2025 00:00:00 GMT+0300 (GMT+03:00)",
+      time: "04:00 PM",
+      available: true,
+    },
+    {
+      date: "Wed Feb 15 2025 00:00:00 GMT+0300 (GMT+03:00)",
+      time: "03:00 PM",
+      available: true,
+    },
   ];
   const pioneer: TPioneer = {
     id: "",
@@ -56,12 +87,20 @@ export default function DashboardPage() {
     },
   };
   const getTimeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const [selectedDate,setSelectedDate] = useState<Date | null>(null)
 
-  const handleSelectDate = useCallback((date:Date)=>{
+  const handleSelectDate = useCallback((date: Date) => {
     setSelectedDate(date);
-  },[])
+  }, []);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
+  const { data, error, isLoading } =
+    api.pioneer.getPioneerAvailableSession.useQuery(
+      { date: timeHelper.convertLocalDateToUTC(selectedDate) },
+      {
+        enabled: !!selectedDate,
+      },
+    );
+console.log(data)
   return (
     <section className="h-full w-full">
       <div className="flex h-full w-full items-start justify-center gap-5">
@@ -71,12 +110,25 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-3">
           <Calendar
             events={events}
-            onDateSelect={(date) =>{handleSelectDate(date);console.log("Selected date:", date,getTimeZone())} }
+            onDateSelect={(date) => {
+              handleSelectDate(date);
+              console.log("Selected date:", date, getTimeZone());
+            }}
             selectedDate={selectedDate}
           />
-          {selectedDate && 
-          <AvailableTimes selectedDate={selectedDate}/>
-          }
+          {selectedDate && (
+            <AvailableTimes
+              initialTimes={
+                data?.map((date) => {
+                  const {ampm,hours} = timeHelper.convertDateToTime(date.date)
+                  return {
+                    hour: `${hours}`,
+                    period: ampm,
+                };
+              })||[]}
+              selectedDate={selectedDate}
+            />
+          )}
           {/* <TimeSlots
             availableSlots={availableSlots}
             onTimeSelect={handleTimeSelect}

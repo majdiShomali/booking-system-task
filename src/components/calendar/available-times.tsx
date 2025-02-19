@@ -16,10 +16,11 @@ import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "../ui/submit-button";
 import { api } from "@/utils/api";
 import timeHelper from "@/helpers/time.helper";
+import { TPeriod } from "@/types/types";
 
 interface AvailableTime {
   hour: string;
-  period: "AM" | "PM";
+  period: TPeriod;
 }
 
 export function AvailableTimes({
@@ -29,13 +30,15 @@ export function AvailableTimes({
   selectedDate: Date;
   initialTimes?: AvailableTime[];
 }) {
-  const { data, error, isLoading } = api.pioneer.getPioneerAvailableSession.useQuery({date:timeHelper.convertLocalDateToUTC(selectedDate)});
-
 
   const [times, setTimes] = React.useState<AvailableTime[]>(initialTimes);
   const [newHour, setNewHour] = React.useState("");
-  const [newPeriod, setNewPeriod] = React.useState<"AM" | "PM">("AM");
+  const [newPeriod, setNewPeriod] = React.useState<TPeriod>("AM");
   const { toast } = useToast();
+  React.useEffect(() => {
+      setTimes(initialTimes)
+  },[initialTimes])
+
 
   const createAvailableSession =
     api.pioneer.createAvailableSession.useMutation();
@@ -100,6 +103,7 @@ export function AvailableTimes({
       description: "The selected time has been removed from the list.",
     });
   };
+
 
 
 

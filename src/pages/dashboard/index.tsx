@@ -74,7 +74,9 @@ export default function DashboardPage() {
             onDateSelect={(date) =>{handleSelectDate(date);console.log("Selected date:", date,getTimeZone())} }
             selectedDate={selectedDate}
           />
+          {selectedDate && 
           <AvailableTimes selectedDate={selectedDate}/>
+          }
           {/* <TimeSlots
             availableSlots={availableSlots}
             onTimeSelect={handleTimeSelect}

@@ -53,7 +53,6 @@ model Pioneer {
 model AvailableSession {
   id         String   @id @default(uuid())
   date       DateTime @db.Timestamptz
-  timezone   String   
   available  Boolean
   pioneer    Pioneer  @relation(fields: [pioneer_id], references: [id], onDelete: Cascade)
   pioneer_id  String

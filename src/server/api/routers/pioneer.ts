@@ -4,7 +4,9 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { pioneerSchema } from "@/schemas/pioneer.schema";
-import { availableSessionSchema } from "@/schemas/available-session.schema";
+import { creteAvailableSessionSchema } from "@/schemas/available-session.schema";
+import { z } from "zod";
+import { startOfDay, endOfDay } from "date-fns";
 
 export const pioneerRouter = createTRPCRouter({
   create: pioneerProcedure
@@ -74,22 +76,34 @@ export const pioneerRouter = createTRPCRouter({
     }),
 
   createAvailableSession: pioneerProcedure
-    .input(availableSessionSchema)
+    .input(creteAvailableSessionSchema)
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      const pioneer = await ctx.db.pioneer.findUnique({
-        where: {
-          user_id: user.id,
-        },
-      });
-      if (!pioneer) throw new Error("Could not find pioneer");
+      if (!user.pioneer) throw new Error("Could not find pioneer"); // TODO - redirect to profile page
       return ctx.db.availableSession.create({
         data: {
           date: input.date,
           available: input.available,
-          timezone: input.timezone,
-          pioneer_id: pioneer.id,
+          pioneer_id: user.pioneer.id,
         },
       });
+    }),
+  getPioneerAvailableSession: pioneerProcedure
+    .input(z.object({ date: z.any() }))
+    .query(async ({ input, ctx }) => {
+      const startOfDayUTC = startOfDay(input.date).toISOString();
+      const endOfDayUTC = endOfDay(input.date).toISOString();
+
+      const user = ctx.session.user;
+      const pioneer = await ctx.db.availableSession.findMany({
+        where: {
+          date: {
+            gte: startOfDayUTC,
+            lte: endOfDayUTC,
+          },
+          pioneer_id: user.pioneer?.id,
+        },
+      });
+      return pioneer;
     }),
 });

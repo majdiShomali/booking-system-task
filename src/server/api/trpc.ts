@@ -146,13 +146,18 @@ const isAuthenticated = t.middleware(({ ctx, next }) => {
   });
 });
 
-const isPioneer = t.middleware(({ ctx, next }) => {
+const isPioneer = t.middleware(async({ ctx, next }) => {
   if (ctx.session?.user.role !== ERole.PIONEER) {
     throw new TRPCError({ code: "FORBIDDEN" });
   }
+  const pioneer = await ctx.db.pioneer.findUnique({
+    where: {
+      user_id: ctx.session.user.id,
+    },
+  });
   return next({
     ctx: {
-      session: { ...ctx.session, user: ctx.session.user },
+      session: { ...ctx.session, user: {...ctx.session.user,pioneer} },
     },
   });
 });

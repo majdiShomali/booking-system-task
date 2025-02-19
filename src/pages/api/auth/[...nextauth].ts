@@ -1,11 +1,11 @@
 import NextAuth, { Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { db } from "@/server/db";
 import { SessionStrategy } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { ERole } from "@/types/auth.types";
 import authHelper from "@/helpers/auth.helper";
 import { siteConfig } from "@/config/site";
+import { userService } from "@/server/api/services/user.service";
 
 export const authOptions = {
   providers: [
@@ -21,17 +21,10 @@ export const authOptions = {
         }
 
         try {
-          const user = await db.user.findUnique({
-            where: { email: credentials.email },
-            include: {
-              role: true,
-            },
-          });
-
+          const user =  await userService.getUserByEmail(credentials.email)
           if (!user) {
             return null;
           }
-
           const isValidPassword = authHelper.validatePassword(
             user.salt,
             user.hash,

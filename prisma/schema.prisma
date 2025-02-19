@@ -35,14 +35,15 @@ model User {
 model Pioneer {
   id           String @id @default(uuid())
   title        String
-  experience   String
+  experience   Int
+  session_duration   Int
   bio          String
   available    Boolean
   skills       String[] 
   additional_information  String[] 
-  facebook     String
-  instagram    String
-  twitter    String
+  facebook     String?
+  instagram    String?
+  twitter    String?
 
   user    User   @relation(fields: [user_id], references: [id])
   user_id String @unique

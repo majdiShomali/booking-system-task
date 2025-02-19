@@ -1,6 +1,6 @@
 import authHelper from "@/helpers/auth.helper";
 import { userRepository } from "../repositories/user.repository";
-import { ERole } from "@prisma/client";
+import type { ERole } from "@prisma/client";
 
 export const userService = {
   async registerUser(name: string, email: string, password: string, role: ERole) {
@@ -20,5 +20,11 @@ export const userService = {
       salt,
       user_role_id: userRole.id,
     });
+  },
+  async getUserById(userId: string) {
+  return userRepository.findUserById(userId);
+  },
+  async getUserByEmail(email: string) {
+  return userRepository.findUserByEmail(email);
   },
 };

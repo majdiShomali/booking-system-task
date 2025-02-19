@@ -1,109 +1,41 @@
-import {
-  createTRPCRouter,
-  pioneerProcedure,
-  publicProcedure,
-} from "@/server/api/trpc";
-import { pioneerSchema } from "@/schemas/pioneer.schema";
-import { creteAvailableSessionSchema } from "@/schemas/available-session.schema";
+import { createTRPCRouter, pioneerProcedure } from "@/server/api/trpc";
+import { createPioneerSchema } from "@/schemas/pioneer.schema";
+import { createAvailableSessionSchema } from "@/schemas/available-session.schema";
+
 import { z } from "zod";
-import { startOfDay, endOfDay } from "date-fns";
+import { pioneerService } from "../services/pioneer.service";
 
 export const pioneerRouter = createTRPCRouter({
   create: pioneerProcedure
-    .input(pioneerSchema)
+    .input(createPioneerSchema)
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      return ctx.db.pioneer.create({
-        data: {
-          title: input.title,
-          bio: input.bio,
-          skills: input.skills,
-          additional_information: input.additional_information,
-          experience: input.experience,
-          available: input.available,
-          facebook: input.facebook || "",
-          instagram: input.instagram || "",
-          twitter: input.twitter || "",
-          user_id: user.id,
-        },
-      });
+      return pioneerService.createPioneer(user.id, input);
     }),
 
   get: pioneerProcedure.query(async ({ ctx }) => {
     const user = ctx.session.user;
-    const pioneer = await ctx.db.pioneer.findUnique({
-      where: {
-        user_id: user.id,
-      },
-    });
-
-    return pioneer;
+    return pioneerService.getPioneerProfile(user.id);
   }),
 
   update: pioneerProcedure
-    .input(pioneerSchema.partial())
+    .input(createPioneerSchema.partial())
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
-
-      const existingPioneer = await ctx.db.pioneer.findUnique({
-        where: {
-          user_id: user.id,
-        },
-      });
-
-      if (!existingPioneer) {
-        throw new Error("Profile not found");
-      }
-
-      return ctx.db.pioneer.update({
-        where: {
-          user_id: user.id,
-        },
-        data: {
-          title: input.title ?? existingPioneer.title,
-          bio: input.bio ?? existingPioneer.bio,
-          skills: input.skills ?? existingPioneer.skills,
-          experience: input.experience ?? existingPioneer.experience,
-          available: input.available ?? existingPioneer.available,
-          facebook: input.facebook ?? existingPioneer.facebook,
-          instagram: input.instagram ?? existingPioneer.instagram,
-          twitter: input.twitter ?? existingPioneer.twitter,
-          additional_information:
-            input.additional_information ??
-            existingPioneer.additional_information,
-        },
-      });
+      return pioneerService.updatePioneerProfile(user.id, input);
     }),
 
   createAvailableSession: pioneerProcedure
-    .input(creteAvailableSessionSchema)
+    .input(createAvailableSessionSchema)
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      if (!user.pioneer) throw new Error("Could not find pioneer"); // TODO - redirect to profile page
-      return ctx.db.availableSession.create({
-        data: {
-          date: input.date,
-          available: input.available,
-          pioneer_id: user.pioneer.id,
-        },
-      });
+      return pioneerService.createAvailableSession(user.id, input);
     }),
-  getPioneerAvailableSession: pioneerProcedure
-    .input(z.object({ date: z.any() }))
-    .query(async ({ input, ctx }) => {
-      const startOfDayUTC = startOfDay(input.date).toISOString();
-      const endOfDayUTC = endOfDay(input.date).toISOString();
 
+  getPioneerAvailableSession: pioneerProcedure
+    .input(z.object({ date: z.date() }))
+    .query(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      const pioneer = await ctx.db.availableSession.findMany({
-        where: {
-          date: {
-            gte: startOfDayUTC,
-            lte: endOfDayUTC,
-          },
-          pioneer_id: user.pioneer?.id,
-        },
-      });
-      return pioneer;
+      return pioneerService.getPioneerAvailableSession(user.id, input.date);
     }),
 });

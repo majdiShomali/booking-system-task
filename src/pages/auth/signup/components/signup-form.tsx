@@ -9,13 +9,13 @@ import { useRouter } from "next/navigation";
 import SubmitButton from "@/components/ui/submit-button";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, ShieldClose } from "lucide-react";
-import { SignupFormValues, signupSchema } from "@/schemas/signup.schema";
+import { SignupFormValues, signupSchema, signupSchemaInitialData } from "@/schemas/signup.schema";
 import { ExtractZODErrors, getZodErrors } from "@/schemas";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ERole } from "@/types/auth.types";
 import { Icons } from "@/components/icons/icons";
 import { api } from "@/utils/api";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 type Props = {};
 
@@ -26,12 +26,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
   const [errors, setErrors] =
     useState<ExtractZODErrors<SignupFormValues> | null>(null);
 
-  const [formData, setFormData] = useState<SignupFormValues>({
-    email: "",
-    name: "",
-    password: "",
-    role: ERole.USER,
-  });
+  const [formData, setFormData] = useState<SignupFormValues>(signupSchemaInitialData);
 
   const { toast } = useToast();
   const Router = useRouter();
@@ -234,11 +229,12 @@ const SignUpForm: React.FC<Props> = ({}) => {
         >
           {"تسجيل"}
         </SubmitButton>
-        <p className="text-sm font-light dark:text-primary">
-          {"لديك حساب ؟"}{" "}
+
+        <p className="text-sm font-light">
+          {"لديك حساب ؟"}
           <Link
             href={`/auth/login`}
-            className="font-medium text-primary hover:underline dark:text-primary"
+            className="font-medium text-primary hover:underline"
           >
             {"تسجيل الدخول"}
           </Link>

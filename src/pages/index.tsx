@@ -1,7 +1,7 @@
 import Calendar from "@/components/calendar/calendar";
 import TimeSlots from "@/components/calendar/time-slots";
 import ProfileCard from "@/components/calendar/profile-card";
-import { TPioneer } from "@/types/pioneer.types";
+import type { TPioneer } from "@/types/pioneer.types";
 
 export default function Home() {
 
@@ -32,7 +32,8 @@ export default function Home() {
     user_id:"",
     title:"مؤسسي ، مستشار ، تدريب على أمور شركات التقنية",
     bio:"متخصص في تطوير وإدارة المنتجات الرقمية. مهني في البرامج وله عدة تجارب فيه. مستشار معتمد ومقدم بودكاست السوالف برنس.",
-    experience:"خبرة 35 عاماً",
+    experience:35,
+    session_duration:60,
     skills:[
       "e-com اشتراك",
       "اعتماد الوسائط الرقمية / المنصة",
@@ -63,6 +64,7 @@ export default function Home() {
           <Calendar
             events={events}
             onDateSelect={(date) => console.log("Selected date:", date)}
+            selectedDate={new Date()}
           />
           <TimeSlots
             availableSlots={availableSlots}

@@ -14,7 +14,7 @@ export default function ProfileCard({
 }: ProfileCardProps) {
 
   return (
-    <Card className="w-full max-w-2xl mx-auto p-6  rtl">
+    <Card className="w-full max-w-2xl  p-6  rtl">
       <div className="flex flex-col md:flex-row-reverse items-start gap-6">
         {/* Profile Image */}
     
@@ -24,12 +24,12 @@ export default function ProfileCard({
             <div className="flex gap-3">
 
         <div className="flex-shrink-0 relative">
-          <Image src={pioneer.user.image || "/placeholder.svg"} alt={pioneer.user.name} width={50} height={50} className="w-24 h-24 rounded-lg object-cover" />
+          <Image src={pioneer.user.image || "/avatars/02.png"} alt={pioneer.user.name} width={50} height={50} className="w-24 h-24 rounded-lg object-cover" />
         </div>
           <div className="space-y-1">
             <h1 className="text-xl font-semibold ">{pioneer.user.name}</h1>
             <p className="text-sm text-muted-foreground">{pioneer.title}</p>
-            <p className="text-sm text-muted-foreground">{pioneer.experience}</p>
+            <p className="text-sm text-muted-foreground">{`خبرة ${pioneer.experience} عاماً`}</p>
           </div>
             </div>
 

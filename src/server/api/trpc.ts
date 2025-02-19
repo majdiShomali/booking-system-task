@@ -12,9 +12,10 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
-import { getServerSession, Session } from "next-auth";
+import { getServerSession, type Session } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { ERole } from "@/types/auth.types";
+import { pioneerService } from "./services/pioneer.service";
 
 /**
  * 1. CONTEXT
@@ -150,11 +151,8 @@ const isPioneer = t.middleware(async({ ctx, next }) => {
   if (ctx.session?.user.role !== ERole.PIONEER) {
     throw new TRPCError({ code: "FORBIDDEN" });
   }
-  const pioneer = await ctx.db.pioneer.findUnique({
-    where: {
-      user_id: ctx.session.user.id,
-    },
-  });
+  const pioneer =  await pioneerService.getPioneerProfile(ctx.session.user.id)
+  
   return next({
     ctx: {
       session: { ...ctx.session, user: {...ctx.session.user,pioneer} },

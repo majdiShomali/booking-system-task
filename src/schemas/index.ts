@@ -1,4 +1,4 @@
-import { z, ZodSchema, ZodError } from "zod";
+import type { z,  ZodSchema } from "zod";
 
 type ExtractZODErrors<T> = {
   [K in keyof T]?: string;

@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/ui/submit-button";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, ShieldClose } from "lucide-react";
-import { LoginFormValues, loginSchema } from "@/schemas/login.schema";
+import { LoginFormValues, loginSchema, loginSchemaInitialData } from "@/schemas/login.schema";
 import { Button } from "@/components/ui/button";
 import { getZodErrors, ExtractZODErrors } from "@/schemas";
 import { siteConfig } from "@/config/site";
@@ -16,10 +16,7 @@ import { signIn } from "next-auth/react";
 
 const LogInForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<LoginFormValues>({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState<LoginFormValues>(loginSchemaInitialData);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] =
     useState<ExtractZODErrors<LoginFormValues> | null>(null);

@@ -13,37 +13,32 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MultiSelect } from "./multi-select";
-import { PioneerFormValues, pioneerSchema } from "@/schemas/pioneer.schema";
-import { ExtractZODErrors, getZodErrors } from "@/schemas";
+import type { CreatePioneerFormValues } from "@/schemas/pioneer.schema";
+import { createPioneerInitialData, createPioneerSchema, UpdatePioneerFormValues, updatePioneerSchema } from "@/schemas/pioneer.schema";
+import  {type ExtractZODErrors, getZodErrors } from "@/schemas";
 import { useToast } from "@/hooks/use-toast";
 import { ShieldClose } from "lucide-react";
 import SubmitButton from "@/components/ui/submit-button";
 import { api } from "@/utils/api";
-import { Pioneer } from "@prisma/client";
+import type { Pioneer } from "@prisma/client";
 import MultiTextInput from "./multi-text-input";
 interface ProfileFormProps {
   initialData: Pioneer | null;
+  mode: "update" | "create"
 }
 
-export default function ProfileForm({ initialData }: ProfileFormProps) {
-  const [formData, setFormData] = useState<PioneerFormValues>(
-    initialData || {
-      id: "",
-      title: "",
-      experience: "",
-      bio: "",
-      available: false,
-      skills: [],
-      facebook: "",
-      instagram: "",
-      twitter: "",
-      additional_information: [],
-    },
+export default function ProfileForm({initialData,mode}:ProfileFormProps) {
+  const createPioneerAction = api.pioneer.create.useMutation();
+  const updatePioneerAction = api.pioneer.update.useMutation();
+
+  const [formData, setFormData] = useState<CreatePioneerFormValues | UpdatePioneerFormValues >(
+    initialData ?? createPioneerInitialData,
   );
+
   const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] =
-    useState<ExtractZODErrors<PioneerFormValues> | null>(null);
+    useState<ExtractZODErrors<CreatePioneerFormValues> | null>(null);
 
   const { toast } = useToast();
 
@@ -56,9 +51,13 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "number" ? (value === "" ? "" : Number(value)) : value,
+    }));
   };
+  
 
   const handleCheckboxChange = (checked: boolean) => {
     setFormData((prev) => ({ ...prev, available: checked }));
@@ -67,28 +66,33 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
   const handleSkillsChange = (selectedSkills: string[]) => {
     setFormData((prev) => ({ ...prev, skills: selectedSkills }));
   };
-  const createPioneerAction = api.pioneer.create.useMutation();
-  const updatePioneerAction = api.pioneer.update.useMutation();
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = pioneerSchema.safeParse(formData);
-    if (!result.success) {
-      setErrors(getZodErrors(pioneerSchema, formData));
-      return;
-    }
+  
     setLoading(true);
 
     try {
-      if (formData?.id) {
-        await updatePioneerAction.mutateAsync(formData);
+      if (mode === 'update') {
+        const result = updatePioneerSchema.safeParse(formData);
+        if (!result.success) {
+          setErrors(getZodErrors(updatePioneerSchema, formData));
+          return;
+        }
+        await updatePioneerAction.mutateAsync(result.data);
         toast({
           title: "Profile updated successfully",
           description: `Profile has been updated`,
         });
       } else {
-        const pioneer = await createPioneerAction.mutateAsync(formData);
+        const result = createPioneerSchema.safeParse(formData);
+        if (!result.success) {
+          setErrors(getZodErrors(createPioneerSchema, formData));
+          return;
+        }
+        const pioneer = await createPioneerAction.mutateAsync(result.data);
         setFormData({ ...pioneer });
         toast({
           title: "Profile created successfully",
@@ -115,7 +119,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
         <CardContent className="flex flex-col items-start justify-start gap-5 lg:flex-row">
           <section className="flex h-full w-full flex-col items-start gap-5 lg:w-1/2">
             <div className="w-full space-y-2">
-              <Label htmlFor="title">{"نبذة تعريفية"}</Label>
+              <Label htmlFor="title">{"نبذة "}</Label>
               <Input
                 id="title"
                 name="title"
@@ -129,11 +133,13 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                 </p>
               )}
             </div>
+            <div className="flex items-center justify-center w-full">
             <div className="w-full space-y-2">
               <Label htmlFor="experience">{"الخبرة"}</Label>
               <Input
                 id="experience"
                 name="experience"
+                type="number"
                 value={formData.experience}
                 onChange={handleInputChange}
               />
@@ -145,13 +151,31 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
               )}
             </div>
             <div className="w-full space-y-2">
-              <Label htmlFor="bio">{"نبذة"}</Label>
+              <Label htmlFor="session_duration">{"مدة الجلسة"}</Label>
+              <Input
+                id="session_duration"
+                name="session_duration"
+                type="number"
+                value={formData.session_duration}
+                onChange={handleInputChange}
+              />
+              {errors?.experience && (
+                <p className="flex items-center text-sm text-red-500">
+                  <ShieldClose size={15} className="mr-1" />
+                  {errors.experience}
+                </p>
+              )}
+            </div>
+            </div>
+          
+            <div className="w-full space-y-2">
+              <Label htmlFor="bio">{"  نبذة تعريفية " }</Label>
               <Textarea
                 id="bio"
                 name="bio"
                 value={formData.bio}
                 onChange={handleInputChange}
-                className="max-h-60"
+                className="min-h-40 max-h-60"
               />
               {errors?.bio && (
                 <p className="flex items-center text-sm text-red-500">
@@ -181,7 +205,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                   "استراتيجيات نمو تويتر",
                   "بناء المجتمع",
                 ]}
-                selected={formData.skills}
+                selected={formData.skills ?? []}
                 onChange={handleSkillsChange}
               />
               {errors?.skills && (
@@ -197,7 +221,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                 <Input
                   id="facebook"
                   name="facebook"
-                  value={formData.facebook}
+                  value={formData.facebook ?? ""}
                   onChange={handleInputChange}
                   placeholder="https://facebook.com/username"
                 />
@@ -213,7 +237,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                 <Input
                   id="instagram"
                   name="instagram"
-                  value={formData.instagram}
+                  value={formData.instagram ?? ""}
                   onChange={handleInputChange}
                   placeholder="https://instagram.com/username"
                 />
@@ -231,7 +255,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
                 <Input
                   id="twitter"
                   name="twitter"
-                  value={formData.twitter}
+                  value={formData.twitter ?? ""}
                   onChange={handleInputChange}
                   placeholder="https://twitter.com/username"
                 />
@@ -247,7 +271,7 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
               initialData={
                 formData.additional_information?.map((value, id) => {
                   return { id, value };
-                }) || []
+                }) ?? []
               }
               title="معلومات اضافية"
               onChange={(data) => {
@@ -260,10 +284,10 @@ export default function ProfileForm({ initialData }: ProfileFormProps) {
         </CardContent>
         <CardFooter>
           <SubmitButton
-            loadingTitle={formData.id ? "...تحديث" : "...انشاء"}
+            loadingTitle={mode ==='update' ? "...تحديث" : "...انشاء"}
             loading={loading}
           >
-            {formData.id ? "تحديث" : "انشاء"}
+            {mode ==='update' ? "تحديث" : "انشاء"}
           </SubmitButton>
         </CardFooter>
       </form>

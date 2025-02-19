@@ -1,8 +1,5 @@
-import { Pioneer } from '@prisma/client';
-// types/next-auth.d.ts
-import NextAuth from "next-auth";
-import { ERole } from "../auth.types";
-import { UserRole } from "@prisma/client";
+import type { ERole } from "../auth.types";
+import type { UserRole } from "@prisma/client";
 
 declare module "next-auth" {
   interface Session {

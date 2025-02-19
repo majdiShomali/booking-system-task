@@ -1,9 +1,17 @@
 import { db } from "@/server/db";
-import { ERole } from "@prisma/client";
+import type { ERole } from "@prisma/client";
 
 export const userRepository = {
   async findUserByEmail(email: string) {
-    return db.user.findUnique({ where: { email } });
+    return db.user.findUnique({
+      where: { email },
+      include: {
+        role: true,
+      },
+    });
+  },
+  async findUserById(userid: string) {
+    return db.user.findUnique({ where: { id: userid } });
   },
 
   async findUserRole(roleName: ERole) {

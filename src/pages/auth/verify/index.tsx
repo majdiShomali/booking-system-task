@@ -1,7 +1,4 @@
-import { NextPage } from "next";
 import React from "react";
-
-import { useSession } from "next-auth/react";
 import { SpotlightPreview } from "@/components/auth/SpotlightPreview";
 import VerifyForm from "./components/verify-form";
 

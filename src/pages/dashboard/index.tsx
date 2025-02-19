@@ -7,7 +7,7 @@ import { useCallback, useState } from "react";
 
 export default function DashboardPage() {
 
-  const events = [new Date(2025, 1, 6), new Date(2025, 1, 15)];
+  // const events = [new Date(2025, 1, 6), new Date(2025, 1, 15)];
 
   // const pioneer: TPioneer = {
   //   id: "",
@@ -42,15 +42,24 @@ export default function DashboardPage() {
     setSelectedDate(date);
   }, []);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
 
-  const { data, error, isLoading } =
-    api.pioneer.getPioneerAvailableSession.useQuery(
+  const { data:pioneerAvailableSession} =
+    api.pioneer.getCurrentPioneerAvailableDaySession.useQuery(
       { date: timeHelper.convertLocalDateToUTC(selectedDate) },
       {
         enabled: !!selectedDate,
       },
     );
-    const { data:pioneer, error:r, isLoading:l } = api.pioneer.get.useQuery();
+    const { data:pioneer} = api.pioneer.getPioneer.useQuery();
+
+    const { data:pioneerAvailableMonthSession } =
+    api.pioneer.getCurrentPioneerAvailableMonthSession.useQuery(
+      { date: timeHelper.convertLocalDateToUTC(selectedMonth) },
+      {
+        enabled: !!selectedMonth,
+      },
+    );
 
     return (
     <section className="h-full w-full">
@@ -62,18 +71,19 @@ export default function DashboardPage() {
         </div>
         <div className="flex flex-col gap-3">
           <Calendar
-            events={events}
+            events={pioneerAvailableMonthSession?.map((date)=>date.date)}
             onDateSelect={(date) => {
               handleSelectDate(date);
               console.log("Selected date:", date, getTimeZone());
             }}
             selectedDate={selectedDate}
             sessionDuration={pioneer?.session_duration}
+            onChangeMonth={(date)=>{setSelectedMonth(date)}}
           />
           {selectedDate && (
             <AvailableTimes
               initialTimes={
-                data?.map((date) => {
+                pioneerAvailableSession?.map((date) => {
                   const {ampm,hours} = timeHelper.convertDateToTime(date.date)
                   return {
                     hour: `${hours}`,
@@ -83,11 +93,7 @@ export default function DashboardPage() {
               selectedDate={selectedDate}
             />
           )}
-          {/* <TimeSlots
-            availableSlots={availableSlots}
-            onTimeSelect={handleTimeSelect}
-            onBooking={handleBooking}
-          /> */}
+ 
         </div>
       </div>
     </section>

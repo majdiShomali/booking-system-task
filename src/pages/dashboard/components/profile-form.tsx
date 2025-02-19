@@ -12,16 +12,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MultiSelect } from "./multi-select";
 import type { CreatePioneerFormValues } from "@/schemas/pioneer.schema";
-import { createPioneerInitialData, createPioneerSchema, UpdatePioneerFormValues, updatePioneerSchema } from "@/schemas/pioneer.schema";
+import { createPioneerInitialData, createPioneerSchema, updatePioneerSchema } from "@/schemas/pioneer.schema";
+import type { UpdatePioneerFormValues } from "@/schemas/pioneer.schema";
 import  {type ExtractZODErrors, getZodErrors } from "@/schemas";
 import { useToast } from "@/hooks/use-toast";
 import { ShieldClose } from "lucide-react";
 import SubmitButton from "@/components/ui/submit-button";
 import { api } from "@/utils/api";
 import type { Pioneer } from "@prisma/client";
-import MultiTextInput from "./multi-text-input";
+import MultiSelect from "@/components/ui/multi-select";
+import MultiTextInput from "@/components/ui/multi-text-input";
+
 interface ProfileFormProps {
   initialData: Pioneer | null;
   mode: "update" | "create"
@@ -133,7 +135,7 @@ export default function ProfileForm({initialData,mode}:ProfileFormProps) {
                 </p>
               )}
             </div>
-            <div className="flex items-center justify-center w-full">
+            <div className="flex items-center justify-center w-full gap-2">
             <div className="w-full space-y-2">
               <Label htmlFor="experience">{"الخبرة"}</Label>
               <Input

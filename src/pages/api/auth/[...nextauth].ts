@@ -1,7 +1,7 @@
-import NextAuth, { Session, User } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { SessionStrategy } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import type { SessionStrategy, User, Session } from "next-auth";
+import { type JWT } from "next-auth/jwt";
 import { ERole } from "@/types/auth.types";
 import authHelper from "@/helpers/auth.helper";
 import { siteConfig } from "@/config/site";
@@ -21,7 +21,7 @@ export const authOptions = {
         }
 
         try {
-          const user =  await userService.getUserByEmail(credentials.email)
+          const user = await userService.getUserByEmail(credentials.email);
           if (!user) {
             return null;
           }
@@ -35,7 +35,7 @@ export const authOptions = {
             return null;
           }
 
-          return user; 
+          return user;
         } catch (error) {
           console.error("Authorization error:", error);
           return null;
@@ -57,12 +57,17 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-      if (session.user && token) {
+      if (
+        session.user?.email &&
+        token?.email &&
+        typeof token.id === "string" &&
+        Object.values(ERole).includes(token.role as ERole)
+      ) {
         session.user = {
           ...session.user,
-          email: token.email as string,
-          id: token.id as string,
-          verified: token.verified as boolean,
+          email: token.email,
+          id: token.id,
+          verified: Boolean(token.verified),
           role: token.role as ERole,
         };
       }

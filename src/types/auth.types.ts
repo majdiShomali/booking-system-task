@@ -1,9 +1,8 @@
-  enum ERole {
-    USER = "USER",
-    PIONEER = "PIONEER",
-  }
+
+enum ERole {
+  USER = "USER",
+  PIONEER = "PIONEER",
+}
 
 
-
-
-  export {ERole}
+export { ERole };

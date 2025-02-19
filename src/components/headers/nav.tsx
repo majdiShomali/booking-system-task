@@ -12,17 +12,17 @@ const Navbar = () => {
   const { data: session } = useSession();
 
   return (
-    <nav className="sticky top-0 z-[11] flex w-full items-center justify-between rounded-bl-lg rounded-br-lg bg-background backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-[11] h-[7vh] flex w-full items-center justify-between rounded-bl-lg rounded-br-lg bg-background backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Link
-        href={siteConfig.pages[session?.user.role || ERole.USER].home}
+        href={siteConfig.pages[session?.user.role ?? ERole.USER].home}
         className="flex items-center justify-start gap-2 overflow-hidden rounded-md lg:w-1/3"
       >
         <Image
-          src="/Qpioneers.png"
+          src={"/Qpioneers.png"}
           alt="Qpioneers"
           title="Qpioneers"
-          width={50}
-          height={50}
+          width={30}
+          height={30}
           className="rounded-r-lg"
           sizes="800"
         />

@@ -7,4 +7,5 @@ const weekDaysAr = [
     "الجمعة",
     "السبت",
   ];
-export default {weekDaysAr}
+  const constants = {weekDaysAr}
+export default  constants

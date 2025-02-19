@@ -17,9 +17,8 @@ import { Icons } from "@/components/icons/icons";
 import { api } from "@/utils/api";
 import { signIn } from "next-auth/react";
 
-type Props = {};
 
-const SignUpForm: React.FC<Props> = ({}) => {
+const SignUpForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
@@ -66,7 +65,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
           action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
         });
 
-        Router.push("/auth/verify");
+        Router.push("/");
         return;
       }
 
@@ -150,6 +149,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
             onChange={onChangeHandler}
             value={formData.email}
             autoComplete="email"
+            placeholder="example@example.com"
           />
           {errors?.email && (
             <p className="flex items-center justify-start text-sm text-red-500">
@@ -172,6 +172,7 @@ const SignUpForm: React.FC<Props> = ({}) => {
               type="text"
               onChange={onChangeHandler}
               value={formData.name}
+              placeholder="سارة احمد"
               // autoComplete="name"
             />
             {errors?.name && (
@@ -196,6 +197,8 @@ const SignUpForm: React.FC<Props> = ({}) => {
               autoComplete="password"
               value={formData.password}
               className="pl-10"
+              placeholder="Password@1234"
+
             />
             <Button
               type="button"

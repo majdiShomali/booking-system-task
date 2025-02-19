@@ -83,6 +83,7 @@ const LogInForm: React.FC = () => {
           <Input
             name="email"
             type="email"
+            placeholder="example@example.com"
             onChange={onChangeHandler}
             value={formData.email}
             autoComplete="email"
@@ -105,6 +106,8 @@ const LogInForm: React.FC = () => {
               autoComplete="current-password"
               value={formData.password}
               className="pl-10"
+              placeholder="Password@1234"
+
             />
             <Button
               type="button"

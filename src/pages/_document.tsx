@@ -16,7 +16,7 @@ class MyDocument extends Document {
           <meta charSet="UTF-8" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-          <body>
+          <body className="h-full">
             <Main />
             <NextScript />
           </body>

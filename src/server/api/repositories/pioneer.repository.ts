@@ -1,4 +1,3 @@
-import type { CreateAvailableSessionFormValues } from "@/schemas/available-session.schema";
 import type {
   CreatePioneerFormValues,
   UpdatePioneerFormValues,
@@ -12,9 +11,20 @@ export const pioneerRepository = {
     });
   },
 
-  async getPioneerByUserId(userId: string) {
+  async findPioneerByUserId(userId: string) {
     return db.pioneer.findUnique({
       where: { user_id: userId },
+      include: { user: true },
+    });
+  },
+  async findPioneerById(pioneerId: string) {
+    return db.pioneer.findUnique({
+      where: { id: pioneerId },
+      include: { user: true },
+    });
+  },
+  async findAllPioneers() {
+    return db.pioneer.findMany({
       include: { user: true },
     });
   },
@@ -26,25 +36,5 @@ export const pioneerRepository = {
     });
   },
 
-  async createAvailableSession(
-    data: CreateAvailableSessionFormValues,
-    pioneer_id: string,
-  ) {
-    return db.availableSession.create({ data: { ...data, pioneer_id } });
-  },
 
-  async getAvailableSessionsForDate(
-    date: { startOfDay: string; endOfDay: string },
-    pioneerId: string,
-  ) {
-    return db.availableSession.findMany({
-      where: {
-        date: {
-          gte: date.startOfDay,
-          lte: date.endOfDay,
-        },
-        pioneer_id: pioneerId,
-      },
-    });
-  },
 };

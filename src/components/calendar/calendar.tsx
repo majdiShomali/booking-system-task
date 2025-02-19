@@ -13,6 +13,7 @@ interface CalendarProps {
   onDateSelect?: (date: Date) => void;
   events?: Date[];
   sessionDuration?: number;
+  onChangeMonth?:(date: Date) => void;
 }
 
 export default function Calendar({
@@ -21,6 +22,7 @@ export default function Calendar({
   onDateSelect,
   events = [],
   sessionDuration =60 ,
+  onChangeMonth
 }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -59,15 +61,20 @@ export default function Calendar({
 
 
   const handlePrevMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1),
-    );
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
+    setCurrentDate(date);
+    if(onChangeMonth){
+      onChangeMonth(date)
+    }
   };
 
   const handleNextMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1),
-    );
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
+
+    setCurrentDate(date);
+    if(onChangeMonth){
+      onChangeMonth(date)
+    }
   };
 
   const isSelectedDate = (date: Date) => {

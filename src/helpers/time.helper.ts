@@ -1,4 +1,4 @@
-import { TPeriod } from "@/types/types";
+import type { TPeriod } from "@/types/types";
 import { format } from "date-fns";
 
 const convertUserInputToUTC = (data: {
@@ -22,42 +22,17 @@ const convertLocalDateToUTC = (date: Date) => {
   const utcDate = new Date(date.toISOString());
   return utcDate;
 };
-const convertUserInputToSEUTC = (date: Date | string) => {
-  const localDate = new Date(date);
-  const startOfDayUTC = new Date(
-    Date.UTC(
-      localDate.getFullYear(),
-      localDate.getMonth(),
-      localDate.getDate(),
-      0,
-      0,
-      0,
-    ),
-  );
-  const endOfDayUTC = new Date(
-    Date.UTC(
-      localDate.getFullYear(),
-      localDate.getMonth(),
-      localDate.getDate(),
-      23,
-      59,
-      59,
-    ),
-  );
-
-  return { startOfDayUTC, endOfDayUTC };
-};
 
 const convertDateToTime = (date: Date | string) => {
   const newDate = new Date(date);
-  const hours = format(newDate, "h");
+  const hours = format(newDate, "hh");
   const ampm = format(newDate, "a") as TPeriod;
   return { hours, ampm };
 };
 
-export default {
+const timeHelper = {
   convertUserInputToUTC,
-  convertUserInputToSEUTC,
   convertLocalDateToUTC,
   convertDateToTime
-};
+}
+export default timeHelper ;

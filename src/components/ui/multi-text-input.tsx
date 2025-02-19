@@ -24,9 +24,9 @@ export default function MultiTextInput({
     initialData?.length === 0 ? [{ id: 0, value: "" }] : initialData
   );
 
-  const debounce = (func: Function, delay: number) => {
+  const debounce = <T extends (...args: any[]) => void>(func: T, delay: number): ((...args: Parameters<T>) => void) => {
     let timer: NodeJS.Timeout;
-    return (...args: any[]) => {
+    return (...args: Parameters<T>) => {
       clearTimeout(timer);
       timer = setTimeout(() => func(...args), delay);
     };
@@ -36,12 +36,12 @@ export default function MultiTextInput({
     debounce((updatedValues: ValueEntry[]) => {
       onChange(updatedValues.map((v) => v.value));
     }, 500),
-    []
+    [onChange]
   );
 
   useEffect(() => {
     debouncedOnChange(values);
-  }, [values]);
+  }, [values, debouncedOnChange]);
 
   const addValue = () => {
     if (values.length > 3) return;

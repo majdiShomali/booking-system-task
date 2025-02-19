@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -20,9 +19,9 @@ import { useCallback, useState } from "react"
 export function NavSheet() {
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleLinkClick = () => {
-    setIsOpen(false)
-  }
+  // const handleLinkClick = () => {
+  //   setIsOpen(false)
+  // }
   const {theme, setTheme, resolvedTheme } = useTheme()
   const { setMetaColor } = useMetaColor()
 

@@ -12,4 +12,5 @@ function validatePassword(salt:string,hash:string, password: string): boolean {
   return getHash(password, salt) === hash;
 };
 
-export default { getSalt, getHash,validatePassword };
+const authHelper = { getSalt, getHash, validatePassword };
+export default authHelper;

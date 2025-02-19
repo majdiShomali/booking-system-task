@@ -2,7 +2,7 @@ import { api } from "@/utils/api";
 import ProfileForm from "../components/profile-form";
 
 export default function ProfilePage() {
-  const { data, error, isLoading } = api.pioneer.get.useQuery();
+  const { data, error, isLoading } = api.pioneer.getPioneer.useQuery();
 
   if (isLoading) {
     return <div>Loading...</div>;

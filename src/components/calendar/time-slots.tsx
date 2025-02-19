@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "../ui/card"
 
 interface TimeSlot {
+  session_id: string
   time: string
   available: boolean
 }

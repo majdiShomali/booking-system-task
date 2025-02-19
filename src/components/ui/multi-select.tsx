@@ -13,7 +13,7 @@ interface MultiSelectProps {
   onChange: (selected: string[]) => void
 }
 
-export function MultiSelect({ options, selected, onChange }: MultiSelectProps) {
+export default function MultiSelect({ options, selected, onChange }: MultiSelectProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -51,4 +51,3 @@ export function MultiSelect({ options, selected, onChange }: MultiSelectProps) {
     </Popover>
   )
 }
-

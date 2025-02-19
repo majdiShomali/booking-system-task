@@ -7,12 +7,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { signOut } from "next-auth/react";
@@ -20,8 +16,8 @@ import { siteConfig } from "@/config/site";
 import { ERole } from "@/types/auth.types";
 import Link from "next/link";
 
-type Props = {};
-const UserMenu: React.FC<Props> = ({}) => {
+
+const UserMenu: React.FC = () => {
   const { data: session } = useSession();
 
   if (!session?.user) return null;
@@ -30,7 +26,7 @@ const UserMenu: React.FC<Props> = ({}) => {
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
           <AvatarImage
-            src={session.user.image || "/avatars/01.png"}
+            src={session.user.image ?? "/avatars/01.png"}
             alt={session.user.name}
           />
           <AvatarFallback className="uppercase">
@@ -39,7 +35,14 @@ const UserMenu: React.FC<Props> = ({}) => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 text-end">
-        <DropdownMenuLabel>حسابي</DropdownMenuLabel>
+        <DropdownMenuLabel className="space-y-2">
+          <p className="flex items-center justify-between">
+          <span>{session.user.name}</span>
+          <span>{"حسابي"}</span>
+          </p>
+       
+          <p className="text-sm text-muted-foreground">{session.user.email}</p>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer">

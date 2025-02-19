@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { X } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,10 +12,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import SubmitButton from "../ui/submit-button";
 import { api } from "@/utils/api";
 import timeHelper from "@/helpers/time.helper";
-import { TPeriod } from "@/types/types";
+import type { TPeriod } from "@/types/types";
 
 interface AvailableTime {
   hour: string;
@@ -41,7 +39,7 @@ export function AvailableTimes({
 
 
   const createAvailableSession =
-    api.pioneer.createAvailableSession.useMutation();
+    api.session.createAvailableSession.useMutation();
 
   const addTime = async () => {
     if (newHour && newPeriod) {
@@ -80,7 +78,7 @@ export function AvailableTimes({
             hour,
             minutes: 0,
           });
-          const createdAvailableSessions =
+                  
             await createAvailableSession.mutateAsync({
               date: dateUtc,
               available: true,

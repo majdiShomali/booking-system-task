@@ -8,9 +8,8 @@ import { z } from "zod";
 import { pioneerService } from "../services/pioneer.service";
 
 export const pioneerRouter = createTRPCRouter({
-
   // SECTION - pioneer
-  
+
   create: pioneerProcedure
     .input(createPioneerSchema)
     .mutation(async ({ ctx, input }) => {
@@ -30,12 +29,14 @@ export const pioneerRouter = createTRPCRouter({
       return pioneerService.updatePioneerProfile(user.id, input);
     }),
 
-
   getCurrentPioneerAvailableDaySession: pioneerProcedure
     .input(z.object({ date: z.date() }))
     .query(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      return pioneerService.getCurrentPioneerAvailableDaySession(user.id, input.date);
+      return pioneerService.getCurrentPioneerAvailableDaySession(
+        user.id,
+        input.date,
+      );
     }),
 
   getCurrentPioneerAvailableMonthSession: pioneerProcedure
@@ -48,7 +49,6 @@ export const pioneerRouter = createTRPCRouter({
       );
     }),
 
-    
   // SECTION - user
 
   getPioneerForUser: protectedProcedure
@@ -61,24 +61,7 @@ export const pioneerRouter = createTRPCRouter({
       return pioneerService.getPioneerProfileForUser(input.pioneer_id);
     }),
 
-  getAll: protectedProcedure.query(async ({  }) => {
+  getAll: protectedProcedure.query(async ({}) => {
     return pioneerService.getAllPioneers();
   }),
-
-  getPioneerAvailableDaySession: protectedProcedure
-    .input(z.object({ date: z.date(), pioneer_id: z.string() }))
-    .query(async ({ input }) => {
-      return pioneerService.getPioneerAvailableDaySession(
-        input.pioneer_id,
-        input.date,
-      );
-    }),
-  getPioneerAvailableMonthSession: protectedProcedure
-    .input(z.object({ date: z.date(), pioneer_id: z.string() }))
-    .query(async ({ input }) => {
-      return pioneerService.getPioneerAvailableMonthSession(
-        input.pioneer_id,
-        input.date,
-      );
-    }),
 });

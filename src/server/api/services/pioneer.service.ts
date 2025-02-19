@@ -32,17 +32,17 @@ export const pioneerService = {
     return pioneerRepository.updatePioneer(userId, input);
   },
 
-
   async getCurrentPioneerAvailableDaySession(userId: string, date: Date) {
     const startOfDayUTC = startOfDay(date).toISOString();
     const endOfDayUTC = endOfDay(date).toISOString();
     const pioneer = await pioneerRepository.findPioneerByUserId(userId);
     if (!pioneer) throw new Error("Could not find pioneer");
-     return sessionService.getAvailableSessionsForDate(
+    return sessionService.getPioneerAvailableSessions(
       { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
       pioneer.id,
-    )
+    );
   },
+
   async getCurrentPioneerAvailableMonthSession(userId: string, date: Date) {
     const startOfDayUTC = startOfMonth(date).toISOString();
     const endOfDayUTC = endOfMonth(date).toISOString();
@@ -50,33 +50,7 @@ export const pioneerService = {
 
     if (!pioneer) throw new Error("Could not find pioneer");
 
-    return sessionService.getAvailableSessionsForDate(
-      { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
-      pioneer.id,
-    );
-  },
-
-  // SECTION - user
-  async getPioneerAvailableDaySession(pioneerId: string, date: Date) {
-    const startOfDayUTC = startOfDay(date).toISOString();
-    const endOfDayUTC = endOfDay(date).toISOString();
-    const pioneer = await pioneerRepository.findPioneerById(pioneerId);
-
-    if (!pioneer) throw new Error("Could not find pioneer");
-
-    return sessionService.getAvailableSessionsForDate(
-      { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
-      pioneer.id,
-    );
-  },
-  async getPioneerAvailableMonthSession(pioneerId: string, date: Date) {
-    const startOfDayUTC = startOfMonth(date).toISOString();
-    const endOfDayUTC = endOfMonth(date).toISOString();
-    const pioneer = await pioneerRepository.findPioneerById(pioneerId);
-
-    if (!pioneer) throw new Error("Could not find pioneer");
-
-    return sessionService.getAvailableSessionsForDate(
+    return sessionService.getPioneerAvailableSessions(
       { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
       pioneer.id,
     );

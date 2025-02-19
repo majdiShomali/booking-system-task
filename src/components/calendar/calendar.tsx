@@ -26,7 +26,6 @@ export default function Calendar({
 }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Get days in month
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -35,19 +34,16 @@ export default function Calendar({
 
     const days = [];
 
-    // Add previous month's days
     for (let i = firstDayOfMonth - 1; i >= 0; i--) {
       const prevDate = new Date(year, month, -i);
       days.push({ date: prevDate, isCurrentMonth: false });
     }
 
-    // Add current month's days
     for (let i = 1; i <= daysInMonth; i++) {
       const currentDate = new Date(year, month, i);
       days.push({ date: currentDate, isCurrentMonth: true });
     }
 
-    // Add next month's days
     const remainingDays = 42 - days.length;
     for (let i = 1; i <= remainingDays; i++) {
       const nextDate = new Date(year, month + 1, i);
@@ -129,7 +125,7 @@ export default function Calendar({
                 "bg-blue-500 text-white hover:bg-blue-600",
               hasEvent(day.date) &&
                 !isSelectedDate(day.date) &&
-                "border-2 border-primary text-secondary-foreground",
+                `border-2 border-primary text-secondary-foreground`,
             )}
           >
             {day.date.getDate()}

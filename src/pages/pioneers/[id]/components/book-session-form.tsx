@@ -7,12 +7,12 @@ import Calendar from "@/components/calendar/calendar";
 import TimeSlots from "@/components/calendar/time-slots";
 import timeHelper from "@/helpers/time.helper";
 const usePioneerData = (pioneerId: string, selectedDate: Date, selectedMonth: Date) => {
-    const { data: pioneerAvailableSession,isLoading:isSessionLoading } = api.pioneer.getPioneerAvailableDaySession.useQuery(
+    const { data: pioneerAvailableSession,isLoading:isSessionLoading } = api.session.getPioneerAvailableDaySession.useQuery(
       { date: timeHelper.convertLocalDateToUTC(selectedDate), pioneer_id: pioneerId },
       { enabled: Boolean(selectedDate && pioneerId) }
     );
   
-    const { data: pioneerAvailableMonthSession } = api.pioneer.getPioneerAvailableMonthSession.useQuery(
+    const { data: pioneerAvailableMonthSession } = api.session.getPioneerAvailableMonthSession.useQuery(
       { date: timeHelper.convertLocalDateToUTC(selectedMonth), pioneer_id: pioneerId },
       { enabled: Boolean(selectedMonth && pioneerId) }
     );
@@ -48,7 +48,7 @@ const BookSessionForm = () => {
     };
   
     if (!pioneerId) return null;
-  
+
   return (
     <div className="flex flex-col lg:flex-row h-full w-full items-center lg:items-start justify-center gap-5">
     <ProfileCard pioneer={pioneer} loading={isPioneerLoading} />
@@ -72,6 +72,7 @@ const BookSessionForm = () => {
         onTimeSelect={handleTimeSelect}
         onBooking={handleBooking}
         loading={isSessionLoading || isSessionLoading}
+        isExpired={false}
       />
     </div>
   </div>

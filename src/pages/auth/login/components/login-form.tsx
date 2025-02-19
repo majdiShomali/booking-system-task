@@ -35,12 +35,14 @@ const LogInForm: React.FC = () => {
   useEffect(() => {
     if (session.data?.user) {
       const role = session.data.user.role;
+      if (role === ERole.PIONEER) {
+        router.push("/dashboard/profile");
+      }
       if (role === ERole.USER) {
         router.push("/");
       }
-      router.push("/dashboard/profile");
     }
-  }, [session.data?.user]);
+  }, [session.data?.user.role]);
 
   const onChangeHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

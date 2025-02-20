@@ -16,10 +16,10 @@ import {
 } from "@/schemas/signup.schema";
 import { ExtractZODErrors, getZodErrors } from "@/schemas";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ERole } from "@/types/auth.types";
 import { Icons } from "@/components/icons/icons";
 import { api } from "@/utils/api";
 import { signIn, useSession } from "next-auth/react";
+import { ERole } from "@prisma/client";
 
 const SignUpForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);

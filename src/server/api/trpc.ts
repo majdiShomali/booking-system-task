@@ -14,8 +14,8 @@ import { ZodError } from "zod";
 import { db } from "@/server/db";
 import { getServerSession, type Session } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { ERole } from "@/types/auth.types";
 import { pioneerService } from "./services/pioneer.service";
+import { ERole } from "@prisma/client";
 
 /**
  * 1. CONTEXT

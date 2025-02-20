@@ -1,6 +1,6 @@
-import { ERole } from "@/types/auth.types";
 import { type NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { ERole } from "@prisma/client";
 
 export async function middleware(req: NextRequest) {
   const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });

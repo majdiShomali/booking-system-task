@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { SessionStrategy, User, Session } from "next-auth";
 import { type JWT } from "next-auth/jwt";
-import { ERole } from "@/types/auth.types";
 import authHelper from "@/helpers/auth.helper";
 import { siteConfig } from "@/config/site";
 import { userService } from "@/server/api/services/user.service";
@@ -35,7 +34,10 @@ export const authOptions = {
             return null;
           }
 
-          return user;
+          return {
+            ...user,
+            role: user.role,
+          };
         } catch (error) {
           console.error("Authorization error:", error);
           return null;
@@ -52,7 +54,7 @@ export const authOptions = {
         token.email = user.email;
         token.id = user.id;
         token.verified = user.verified;
-        token.role = user.role?.name;
+        token.role = user.role;
       }
       return token;
     },
@@ -60,15 +62,14 @@ export const authOptions = {
       if (
         session.user?.email &&
         token?.email &&
-        typeof token.id === "string" &&
-        Object.values(ERole).includes(token.role as ERole)
+        typeof token.id === "string" 
       ) {
         session.user = {
           ...session.user,
           email: token.email,
           id: token.id,
           verified: Boolean(token.verified),
-          role: token.role as ERole,
+          role: token.role,
         };
       }
       return session;

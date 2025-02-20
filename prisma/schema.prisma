@@ -15,6 +15,14 @@ enum ERole {
   USER
 }
 
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -26,17 +34,18 @@ model User {
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
 
-  role         UserRole @relation(fields: [user_role_id], references: [id])
-  user_role_id String
+  role      ERole    @default(USER)
 
   pioneer Pioneer? @relation
+  bookedSessions BookedSession[]  
+
 }
 
 model Pioneer {
   id           String @id @default(uuid())
   title        String
   experience   Int
-  session_duration   Int
+  session_duration   Float
   bio          String
   available    Boolean
   skills       String[] 
@@ -57,10 +66,19 @@ model AvailableSession {
   available  Boolean
   pioneer    Pioneer  @relation(fields: [pioneer_id], references: [id], onDelete: Cascade)
   pioneer_id  String
+
+  bookedSession BookedSession?  
+
 }
 
-model UserRole {
-  id    String @id @default(uuid())
-  name  ERole  @unique @default(USER)
-  users User[]
+model BookedSession {
+  id                  String            @id @default(uuid())
+  user                User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id             String
+  availableSession    AvailableSession  @relation(fields: [available_session_id], references: [id], onDelete: Cascade)
+  available_session_id String @unique  
+  status              BookingStatus     @default(PENDING)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
 }
+

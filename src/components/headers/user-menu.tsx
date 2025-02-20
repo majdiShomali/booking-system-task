@@ -13,8 +13,8 @@ import {
 } from "../ui/dropdown-menu";
 import { signOut } from "next-auth/react";
 import { siteConfig } from "@/config/site";
-import { ERole } from "@/types/auth.types";
 import Link from "next/link";
+import { ERole } from "@prisma/client";
 
 
 const UserMenu: React.FC = () => {
@@ -48,7 +48,7 @@ const UserMenu: React.FC = () => {
           <DropdownMenuItem className="cursor-pointer">
             <Link
             className="w-full flex items-center justify-between"
-              href={siteConfig.pages[session?.user.role || ERole.USER].profile}
+              href={siteConfig.pages[session?.user.role as ERole ?? ERole.USER].profile}
             >
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
               <span className="w-full">الحساب الشخصي</span>

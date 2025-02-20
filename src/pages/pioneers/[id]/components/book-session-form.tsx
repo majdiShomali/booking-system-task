@@ -64,7 +64,7 @@ const BookSessionForm = () => {
       <TimeSlots
         availableSlots={pioneerAvailableSession?.map((date) => ({
           session_id: date.id,
-          available: true,
+          available: date.available,
           time: `${timeHelper.convertDateToTime(date.date).hours}:00 ${
             timeHelper.convertDateToTime(date.date).ampm
           }`,

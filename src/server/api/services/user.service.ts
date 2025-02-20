@@ -4,8 +4,7 @@ import type { ERole } from "@prisma/client";
 
 export const userService = {
   async registerUser(name: string, email: string, password: string, role: ERole) {
-    const userRole = await userRepository.findUserRole(role);
-    if (!userRole) throw new Error("No user role found");
+
 
     const existingUser = await userRepository.findUserByEmail(email);
     if (existingUser) throw new Error("User already exists");
@@ -18,7 +17,7 @@ export const userService = {
       email,
       hash,
       salt,
-      user_role_id: userRole.id,
+      role,
     });
   },
   async getUserById(userId: string) {

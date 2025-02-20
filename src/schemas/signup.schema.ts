@@ -1,5 +1,5 @@
 
-import { ERole } from "@/types/auth.types";
+import { ERole } from "@prisma/client";
 import { z } from "zod";
 
 const signupSchema = z.object({

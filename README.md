@@ -56,6 +56,18 @@ npx prisma db push
 ```sh
 npx prisma db seed
 ```
+##### 3️ Accounts
+**Please use this account to add available times or create new ones.You can also create new pioneer accounts.** 
+
+**Email**
+```sh
+saraahmad@gmail.com
+```
+**password**
+```sh
+Password@1234
+```
+
 
 ### 🚀 Start the Development Server
 

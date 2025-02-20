@@ -1,29 +1,75 @@
-# Create T3 App
+# 🚀 Full-Stack Booking System Task
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This project is built with the powerful [T3 Stack](https://create.t3.gg/), providing a robust and scalable full-stack solution.
 
-## What's next? How do I make an app with this?
+🔗 **Live Demo:** [Visit Booking System Task](https://majdi-shomali.vercel.app/)
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+---
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## 💻 Tech Stack
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+![NextJS](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169e1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=Socket.io&logoColor=white)
+![Zod](https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white)
+![NextAuth](https://img.shields.io/badge/NextAuth-red?style=for-the-badge)
 
-## Learn More
+---
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## 🚀 Getting Started
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+Follow these steps to run the project locally.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### 📥 Clone the Repository
 
-## How do I deploy this?
+```sh
+git clone https://github.com/majdiShomali/booking-system-task.git
+cd booking-system-task
+```
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+### 📦 Install Dependencies
+
+```sh
+npm install
+```
+
+### 🗄️ Set Up Database
+
+#### 1️⃣ Define the Connection String
+
+Create a `.env` file in the root directory and add the following:
+
+```sh
+DATABASE_URL="postgresql://postgres:1234@localhost:5432/booking-system-task"
+```
+
+#### 2️⃣ Push Database Schema
+
+```sh
+npx prisma db push
+```
+
+#### 3️⃣ Seed the Database
+
+```sh
+npx prisma db seed
+```
+
+### 🚀 Start the Development Server
+
+```sh
+npm run dev
+```
+
+Your application should now be running at `http://localhost:3000/` 🎉.
+
+---
+
+## 📜 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+🚀 Happy Coding!
+

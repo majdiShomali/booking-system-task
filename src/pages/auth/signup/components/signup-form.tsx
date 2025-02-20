@@ -36,8 +36,8 @@ const SignUpForm: React.FC = () => {
   const session = useSession();
 
   useEffect(() => {
-    if (session.data?.user) {
-      const role = session.data.user.role;
+    if (session.data?.user && session.data?.user?.role) {
+      const role = session.data.user.role as ERole  ;
       if (role === ERole.USER) {
         Router.push("/");
       }

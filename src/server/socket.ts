@@ -13,40 +13,65 @@ export const io = new Server(server, {
   },
 });
 
-const cleanUp = () => {
-  console.log('Closing Socket.IO server...');
-  io.close(() => {
-    console.log('Socket.IO server closed.');
-    server.close(() => {
-      console.log('HTTP server closed.');
-      process.exit(0); 
+
+const cleanUp = async () => {
+  try {
+    console.log('Closing Socket.IO server...');
+    await new Promise<void>((resolve) => {
+      io.close(() => resolve());
     });
-  });
+    console.log('Socket.IO server closed.');
+
+    await new Promise<void>((resolve, reject) => {
+      server.close((err) => (err ? reject(err) : resolve()));
+    });
+    console.log('HTTP server closed.');
+
+    process.exit(0);
+  } catch (error) {
+    console.error('Error during cleanup:', error);
+    process.exit(1);
+  }
 };
 
+const handleSignal = async (signal: string) => {
+  console.log(`Received ${signal} signal. Closing server...`);
+  await cleanUp();
+};
+
+// Use an inline wrapper function to handle the promise correctly
 process.on('SIGINT', () => {
-  console.log('Received SIGINT signal. Closing server...');
-  cleanUp();
+  handleSignal('SIGINT').catch((error) => {
+    console.error('Error handling SIGINT:', error);
+    process.exit(1);
+  });
 });
 
 process.on('SIGTERM', () => {
-  console.log('Received SIGTERM signal. Closing server...');
-  cleanUp();
+  handleSignal('SIGTERM').catch((error) => {
+    console.error('Error handling SIGTERM:', error);
+    process.exit(1);
+  });
 });
+
+
+
+
 
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  socket.on('book_session', async (data) => {
-    try {
-      const booking = await BookingService.bookSession(data.userId, data.availableSessionId);
-      socket.broadcast.emit('session_booked', { sessionId: data.availableSessionId, status: 'booked' });
-      socket.emit('booking_confirmation', booking);
-    } catch (error) {
-      console.error('Error booking session:', error);
-      socket.emit('booking_error', { message: 'Failed to book session' });
-    }
-  });
+  // socket.on('book_session', async (data) => {
+  //   try {
+  //     const booking = await BookingService.bookSession(data.userId, data.availableSessionId);
+  //     socket.broadcast.emit('session_booked', { sessionId: data.availableSessionId, status: 'booked' });
+  //     socket.emit('booking_confirmation', booking);
+  //   } catch (error) {
+  //     console.error('Error booking session:', error);
+  //     socket.emit('booking_error', { message: 'Failed to book session' });
+  //   }
+  // });
+  
 
   socket.on('disconnect', () => {
     console.log('A user disconnected');

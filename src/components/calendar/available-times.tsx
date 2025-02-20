@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -166,7 +165,7 @@ function AvailableTimesLoadingSkeleton() {
     <div className="space-y-4">
       <Skeleton className="h-7 w-40" /> 
       <div className="flex flex-wrap gap-2 w-96">
-        {[...Array(5)].map((_, index) => (
+      {Array.from({ length: 5 }).map((_, index) => (
           <Skeleton key={index} className="h-8 w-24 rounded-md" /> 
         ))}
       </div>

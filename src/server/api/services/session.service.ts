@@ -1,7 +1,7 @@
 import type { CreateAvailableSessionFormValues } from "@/schemas/available-session.schema";
 import { PioneerRepository } from "../repositories/pioneer.repository";
 import { SessionRepository } from "../repositories/session.repository";
-import { startOfDay, endOfDay, startOfMonth, endOfMonth } from "date-fns";
+import { startOfDay, endOfDay, endOfMonth } from "date-fns";
 
 export class SessionService  {
 

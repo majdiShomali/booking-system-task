@@ -10,7 +10,10 @@ export class BookingService {
       const booking = await db.$transaction(async (tx) => {
         const session =
           await SessionService.findAvailableSessionById(availableSessionId);
-        if (!session || !session.available) {
+        if (!session?.id) {
+          throw new Error("No session found ");
+        }
+        if (!session?.available) {
           throw new Error("Session already booked!");
         }
 

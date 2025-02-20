@@ -1,6 +1,6 @@
 import timeHelper from "@/helpers/time.helper";
 import { api } from "@/utils/api";
-import { AvailableSession } from "@prisma/client";
+import type { AvailableSession } from "@prisma/client";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
@@ -21,13 +21,13 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
     );
 
   useEffect(() => {
-    setAvailableSessions(pioneerAvailableSession || []);
+    setAvailableSessions(pioneerAvailableSession ?? []);
   }, [pioneerAvailableSession]);
 
   useEffect(() => {
     if (pioneerId && selectedDate) {
       const socketIo = io(
-        process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5555",
+        process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:5555",
       );
 
       socketIo.on("connect", () => {
@@ -36,9 +36,6 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
 
       socketIo.on("session_booked", (data: AvailableSession) => {
         setSessionStatus(`Session ${data.id} has been booked!`);
-        console.log("availableSession🪧🪧🪧🪧")
-        console.log(data)
-        console.log("availableSession🪧🪧🪧🪧")
         setAvailableSessions((prev) => {
           const prevSessions = prev? [...prev] : [];
           return prevSessions?.map((prevSession) => {

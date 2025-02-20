@@ -2,15 +2,13 @@ import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import SubmitButton from "@/components/ui/submit-button";
 import timeHelper from "@/helpers/time.helper";
-import { AvailableSession } from "@prisma/client";
+import type { AvailableSession } from "@prisma/client";
 import { memo, useMemo, useState } from "react";
 
 type Props = {

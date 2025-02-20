@@ -6,7 +6,7 @@ import ProfileCard from "@/components/calendar/profile-card";
 import Calendar from "@/components/calendar/calendar";
 import TimeSlots from "@/components/calendar/time-slots";
 import timeHelper from "@/helpers/time.helper";
-import { AvailableSession } from "@prisma/client";
+import type { AvailableSession } from "@prisma/client";
 import useBookingSocket from "@/hooks/use-booking-socket";
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
@@ -54,7 +54,7 @@ const BookSessionForm = () => {
       if (!selectedSession) return;
 
       try {
-        const booking = await bookingAction.mutateAsync({
+       await bookingAction.mutateAsync({
           availableSessionId: selectedSession.id,
         });
         toast({
@@ -71,7 +71,7 @@ const BookSessionForm = () => {
         });
       }
     },
-    [],
+    [bookingAction],
   );
 
   const { isSessionLoading, availableSession } = useBookingSocket(

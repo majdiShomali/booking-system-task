@@ -33,8 +33,8 @@ const LogInForm: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (session?.user) {
-      const role = session.user.role;
+    if (session?.user && session.user?.role) {
+      const role = session.user.role as ERole  ;
       if (role === ERole.PIONEER) {
         router.push("/dashboard/profile");
       } else if (role === ERole.USER) {

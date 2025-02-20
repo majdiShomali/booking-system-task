@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export default function ProfilePage() {
-  const { data, error, isLoading } = api.pioneer.getPioneer.useQuery();
+  const { data,  isLoading } = api.pioneer.getPioneer.useQuery();
 
   return (
     <div className="mb-5 h-full w-full flex-col items-center justify-center">

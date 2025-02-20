@@ -28,14 +28,14 @@ export class SessionRepository {
   }
 
   static async findPioneerAvailableSessions(
-    date: { startOfDay: string; endOfDay: string },
+    date: { startDate: string; endDate: string },
     pioneerId: string,
   ) {
     return db.availableSession.findMany({
       where: {
         date: {
-          gte: date.startOfDay,
-          lte: date.endOfDay,
+          gte: date.startDate,
+          lte: date.endDate,
         },
         pioneer_id: pioneerId,
         available: true,

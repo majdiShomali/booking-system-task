@@ -100,6 +100,7 @@ const TimeSlots: React.FC<TimeSlotsProps> = ({
           onBooking={onBooking}
           session={selectedSession}
           loading={isBooking}
+          isDisabled={!availableSlots?.find((slot)=>slot.id ===selectedSession?.id)}
         />
       </div>
     </Card>

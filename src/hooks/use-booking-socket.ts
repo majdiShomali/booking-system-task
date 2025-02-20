@@ -12,7 +12,7 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
   >(null);
 
   const { data: pioneerAvailableSession, isLoading: isSessionLoading } =
-    api.session.getPioneerAvailableDaySession.useQuery(
+    api.session.getPioneerAvailableDaySessionForUser.useQuery(
       {
         date: timeHelper.convertLocalDateToUTC(selectedDate),
         pioneer_id: pioneerId,

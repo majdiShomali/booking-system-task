@@ -90,7 +90,7 @@ const Calendar: React.FC<CalendarProps> = ({
     <Card className="rtl mx-auto w-full max-w-md space-y-4 p-3">
       <div className="space-y-2 text-center">
         <h2 className="text-xl font-semibold">{"الأيام المتاحة"}</h2>
-        <p className="text-sm text-muted-foreground">{`مدة الجلسة ${sessionDuration} دقيقة محددة سابقاً من قبل المستشار`}</p>
+        <p className="text-sm text-muted-foreground">{"مدة الجلسة "}<span className="font-semibold text-primary">{sessionDuration}</span>{` دقيقة محددة سابقاً من قبل المستشار`}</p>
       </div>
 
       <div className="flex items-center justify-between">

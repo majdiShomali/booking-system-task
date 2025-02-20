@@ -1,6 +1,7 @@
 import { Server } from 'socket.io';
 import http from 'http';
 import { BookingService } from './api/services/booking.service';
+import { exec } from 'child_process';
 
 const server = http.createServer();
 
@@ -62,15 +63,19 @@ server.listen(PORT, '0.0.0.0', () => {
 server.on('error', (e:{code:string}) => {
   if (e?.code === 'EADDRINUSE') {
     console.log(`Port ${PORT} is already in use. Trying to kill the process...`);
-    const killPort = require('kill-port');
-    killPort(PORT)
-      .then(() => {
-        console.log(`Port ${PORT} has been freed. Restarting server...`);
-        server.listen(PORT, '0.0.0.0');
-      })
-      .catch((err:Error) => {
-        console.error('Failed to kill port:', err);
+    
+    const killProcessOnPort = (port: number) => {
+      exec(`lsof -i :${port} | grep LISTEN | awk '{print $2}' | xargs kill -9`, (err) => {
+        if (err) {
+          console.error(`Failed to kill process on port ${port}:`, err);
+        } else {
+          console.log(`Killed process running on port ${port}`);
+          server.listen(PORT, '0.0.0.0');
+        }
       });
+    };
+
+    killProcessOnPort(PORT);
   } else {
     console.error('Server error:', e);
   }

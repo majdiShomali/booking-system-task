@@ -9,7 +9,6 @@ import { PioneerService } from "../services/pioneer.service";
 
 export const pioneerRouter = createTRPCRouter({
   // SECTION - pioneer
-
   create: pioneerProcedure
     .input(createPioneerSchema)
     .mutation(async ({ ctx, input }) => {
@@ -49,8 +48,8 @@ export const pioneerRouter = createTRPCRouter({
       );
     }),
 
-  // SECTION - user
-
+  // SECTION - User
+  // NOTE: In the future, we may restrict access to certain fields for users.
   getPioneerForUser: protectedProcedure
     .input(
       z.object({

@@ -17,9 +17,8 @@ export class PioneerService {
   static async getPioneerProfile(userId: string) {
     return PioneerRepository.findPioneerByUserId(userId);
   }
-  static async getPioneerProfileForUser(pioneerId: string) {
-    return PioneerRepository.findPioneerById(pioneerId);
-  }
+
+
 
   static async getAllPioneers() {
     return PioneerRepository.findAllPioneers();
@@ -60,5 +59,11 @@ export class PioneerService {
       { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
       pioneer.id,
     );
+  }
+
+  // SECTION - User
+  // NOTE: In the future, we may restrict access to certain fields for users.
+  static async getPioneerProfileForUser(pioneerId: string) {
+    return PioneerRepository.findPioneerById(pioneerId);
   }
 }

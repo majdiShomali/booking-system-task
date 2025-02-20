@@ -10,15 +10,9 @@ import { AvailableSession } from "@prisma/client";
 import useBookingSocket from "@/hooks/use-booking-socket";
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-const usePioneerData = (
-  pioneerId: string,
-  selectedDate: Date,
-  selectedMonth: Date,
-) => {
-
-
+const usePioneerData = (pioneerId: string, selectedMonth: Date) => {
   const { data: pioneerAvailableMonthSession } =
-    api.session.getPioneerAvailableMonthSession.useQuery(
+    api.session.getPioneerAvailableMonthSessionForUser.useQuery(
       {
         date: timeHelper.convertLocalDateToUTC(selectedMonth),
         pioneer_id: pioneerId,
@@ -33,11 +27,9 @@ const usePioneerData = (
     );
 
   return {
-    // pioneerAvailableSession,
     pioneerAvailableMonthSession,
     pioneer,
     isPioneerLoading,
-    // isSessionLoading,
   };
 };
 const BookSessionForm = () => {
@@ -48,11 +40,8 @@ const BookSessionForm = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
 
-  const {
-    pioneerAvailableMonthSession,
-    pioneer,
-    isPioneerLoading,
-  } = usePioneerData(pioneerId, selectedDate, selectedMonth);
+  const { pioneerAvailableMonthSession, pioneer, isPioneerLoading } =
+    usePioneerData(pioneerId, selectedMonth);
 
   const handleSelectDate = useCallback((date: Date) => {
     setSelectedDate(date);
@@ -62,7 +51,6 @@ const BookSessionForm = () => {
 
   const handleBooking = useCallback(
     async (selectedSession: AvailableSession) => {
-
       if (!selectedSession) return;
 
       try {
@@ -76,20 +64,20 @@ const BookSessionForm = () => {
         });
       } catch (error) {
         toast({
-          title: "حدث خطأ اثناء الحجز او حجزت الجلسة" ,
+          title: "حدث خطأ اثناء الحجز او حجزت الجلسة",
           description: `يرجا المحاولة مرة اخرة `,
           action: <ToastAction altText="undo">{"رجوع"}</ToastAction>,
           variant: "destructive",
         });
       }
-   
- 
-      
     },
     [],
   );
 
-  const {isSessionLoading,availableSession} = useBookingSocket(pioneerId,selectedDate)
+  const { isSessionLoading, availableSession } = useBookingSocket(
+    pioneerId,
+    selectedDate,
+  );
 
   if (!pioneerId) return null;
 

@@ -17,28 +17,31 @@ type Props = {
   onBooking: (session: AvailableSession) => Promise<void>;
   session: AvailableSession | null;
   loading: boolean;
+  isDisabled: boolean;
 };
 const BookConfirmationAlert: React.FC<Props> = ({
   onBooking,
   session,
   loading,
+  isDisabled,
 }) => {
   const [open, setOpen] = useState(false);
 
-
   const time = useMemo(() => {
     if (!session) return "";
-   return `${timeHelper.convertDateToTime(session.date).hours}:00 ${
+    return `${timeHelper.convertDateToTime(session.date).hours}:00 ${
       timeHelper.convertDateToTime(session.date).ampm
     }`;
   }, [session]);
 
   return (
     <AlertDialog open={open} onOpenChange={(value) => setOpen(value)}>
-      <Button onClick={()=>setOpen(true)} disabled={!session?.id} className="w-full">
-  
-          حجز جلسة
-      
+      <Button
+        onClick={() => setOpen(true)}
+        disabled={!session?.id || isDisabled}
+        className="w-full"
+      >
+        حجز جلسة
       </Button>
       <AlertDialogContent className="items-start text-right">
         <AlertDialogHeader>
@@ -63,8 +66,8 @@ const BookConfirmationAlert: React.FC<Props> = ({
               {"الغاء"}
             </Button>
             <form
-              onSubmit={async(e) => {
-                if(!session?.id) return;
+              onSubmit={async (e) => {
+                if (!session?.id) return;
                 e.preventDefault();
                 await onBooking(session);
                 setOpen(false);

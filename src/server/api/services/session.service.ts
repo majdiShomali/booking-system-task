@@ -4,6 +4,8 @@ import { SessionRepository } from "../repositories/session.repository";
 import { startOfDay, endOfDay, startOfMonth, endOfMonth } from "date-fns";
 
 export class SessionService  {
+
+  // SECTION - pioneer 
   static async createAvailableSession(
     userId: string,
     input: CreateAvailableSessionFormValues,
@@ -19,29 +21,31 @@ export class SessionService  {
     );
   }
 
-  static async getPioneerAvailableDaySession(pioneerId: string, date: Date) {
-    const startOfDayUTC = startOfDay(date).toISOString();
-    const endOfDayUTC = endOfDay(date).toISOString();
-    return SessionRepository.findPioneerAvailableSessions(
-      { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
-      pioneerId,
-    );
-  }
-  
-  static async getPioneerAvailableMonthSession(pioneerId: string, date: Date) {
-    const startOfDayUTC = startOfMonth(date).toISOString();
-    const endOfDayUTC = endOfMonth(date).toISOString();
-    return SessionRepository.findPioneerAvailableSessions(
-      { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
-      pioneerId,
-    );
-  }
+    // SECTION - user
+    static async getPioneerAvailableMonthSessionForUser(pioneerId: string, date: Date) {
+      const startOfCurrentDayUTC = startOfDay(new Date()).toISOString();
+      const endOfMonthUTC = endOfMonth(date).toISOString();
+      return SessionRepository.findPioneerAvailableSessions(
+        { startDate: startOfCurrentDayUTC, endDate: endOfMonthUTC },
+        pioneerId,
+      );
+    }
+    static async getPioneerAvailableDaySessionForUser(pioneerId: string, date: Date) {
+      const startOfDayUTC = startOfDay(new Date()).toISOString();
+      const endOfDayUTC = endOfDay(date).toISOString();
+      return SessionRepository.findPioneerAvailableSessions(
+        { startDate: startOfDayUTC, endDate: endOfDayUTC },
+        pioneerId,
+      );
+    }
+
+  // SECTION - pioneer - user
 
   static async getPioneerAvailableSessions(
     date: { startOfDay: string; endOfDay: string },
     pioneerId: string,
   ) {
-    return SessionRepository.findPioneerAvailableSessions(date, pioneerId);
+    return SessionRepository.findPioneerAvailableSessions({ startDate: date.startOfDay, endDate: date.endOfDay }, pioneerId);
   }
 
   static  async findAvailableSessionById(

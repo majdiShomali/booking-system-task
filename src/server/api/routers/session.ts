@@ -15,36 +15,26 @@ export const sessionRouter = createTRPCRouter({
     }),
 
     
-  // SECTION - user - pioneer
-
-  getPioneerAvailableDaySession: protectedProcedure
+  // SECTION - user 
+  getPioneerAvailableMonthSessionForUser: protectedProcedure
+  .input(z.object({ date: z.date(), pioneer_id: z.string() }))
+  .query(async ({ input }) => {
+    return SessionService.getPioneerAvailableMonthSessionForUser(
+      input.pioneer_id,
+      input.date,
+    );
+  }),
+  getPioneerAvailableDaySessionForUser: protectedProcedure
     .input(z.object({ date: z.date(), pioneer_id: z.string() }))
     .query(async ({ input }) => {
-      return SessionService.getPioneerAvailableDaySession(
+      return SessionService.getPioneerAvailableDaySessionForUser(
         input.pioneer_id,
         input.date,
       );
     }),
 
-  getPioneerAvailableMonthSession: protectedProcedure
-    .input(z.object({ date: z.date(), pioneer_id: z.string() }))
-    .query(async ({ input }) => {
-      return SessionService.getPioneerAvailableMonthSession(
-        input.pioneer_id,
-        input.date,
-      );
-    }),
 
 
-  // getAvailableSessions:protectedProcedure
-  //    .input(
-  //      z.object({
-  //        date: z.string(),
-  //      }),
-  //    )
-  //    .query(async ({ input }) => {
-  //      return SessionService.getPioneerProfileForUser(input.pioneer_id);
-  //    }),
-    
+
 
 });

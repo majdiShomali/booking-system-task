@@ -2,7 +2,7 @@
 
 This project is built with the powerful [T3 Stack](https://create.t3.gg/), providing a robust and scalable full-stack solution.
 
-🔗 **Live Demo:** [Visit Booking System Task](https://majdi-shomali.vercel.app/)
+🔗 **Live Demo:** [Visit Booking System Task](https://booking-system-task.vercel.app/)
 
 ---
 

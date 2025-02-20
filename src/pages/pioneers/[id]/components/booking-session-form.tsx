@@ -8,6 +8,8 @@ import TimeSlots from "@/components/calendar/time-slots";
 import timeHelper from "@/helpers/time.helper";
 import { AvailableSession } from "@prisma/client";
 import useBookingSocket from "@/hooks/use-booking-socket";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 const usePioneerData = (
   pioneerId: string,
   selectedDate: Date,
@@ -60,11 +62,27 @@ const BookSessionForm = () => {
 
   const handleBooking = useCallback(
     async (selectedSession: AvailableSession) => {
-      console.log("Booking session for:", selectedSession);
+
       if (!selectedSession) return;
-      const booking = await bookingAction.mutateAsync({
-        availableSessionId: selectedSession.id,
-      });
+
+      try {
+        const booking = await bookingAction.mutateAsync({
+          availableSessionId: selectedSession.id,
+        });
+        toast({
+          title: "تم حجز الجلسة ",
+          description: `شكرا لك`,
+          action: <ToastAction altText="undo">{"رجوع"}</ToastAction>,
+        });
+      } catch (error) {
+        toast({
+          title: "حدث خطأ اثناء الحجز او حجزت الجلسة" ,
+          description: `يرجا المحاولة مرة اخرة `,
+          action: <ToastAction altText="undo">{"رجوع"}</ToastAction>,
+          variant: "destructive",
+        });
+      }
+   
  
       
     },

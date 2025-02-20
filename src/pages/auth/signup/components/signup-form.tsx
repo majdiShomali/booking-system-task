@@ -73,24 +73,24 @@ const SignUpForm: React.FC = () => {
           password: formData.password,
         });
         toast({
-          title: "Registered Successfully",
-          description: `Please enter your registration otp code sent  your email ${formData.email}`,
-          action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
+          title: "تم تسجيل الدخول بنجاح",
+          description: `اهلا ${formData.email}`,
+          action: <ToastAction altText="undo">{"رجوع"}</ToastAction>,
         });
         return;
       }
 
       toast({
-        title: "Registered Failed",
-        description: `Please try again`,
-        action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
+        title: "فشل تسجيل الدخول ",
+        description: `الرجا المحاولة مرة اخرى`,
+        action: <ToastAction altText="undo">{"رجوع"}</ToastAction>,
         variant: "destructive",
       });
     } catch (error) {
       toast({
-        title: "Registered Failed",
-        description: `Please try again`,
-        action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
+        title: "فشل تسجيل الدخول ",
+        description: `الرجا المحاولة مرة اخرى`,
+        action: <ToastAction altText="undo">{"رجوع"}</ToastAction>,
         variant: "destructive",
       });
     }

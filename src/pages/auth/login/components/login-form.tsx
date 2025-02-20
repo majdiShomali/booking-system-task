@@ -68,20 +68,20 @@ const LogInForm: React.FC = () => {
 
       if (res?.error) {
         toast({
-          title: "Login Failed",
-          description: "Invalid credentials, please try again.",
+          title: "فشل تسجيل الدخول",
+          description: "خطأ في البيانات المدخلة يرجا المحاولة مرة اخرى",
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Login Successful",
-          description: `Welcome back, ${formData.email}!`,
+          title: "تم تسجيل الدخول بنجاح",
+          description: `اهلا مجددا, ${formData.email}!`,
         });
       }
     } catch (error) {
       toast({
-        title: "An unexpected error occurred",
-        description: "Please try again later.",
+        title: "حدق خطأ",
+        description: " المحاولة مرة اخرى",
         variant: "destructive",
       });
     } finally {

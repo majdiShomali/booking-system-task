@@ -5,7 +5,7 @@ import {
 } from "@/server/api/trpc";
 import { createPioneerSchema } from "@/schemas/pioneer.schema";
 import { z } from "zod";
-import { pioneerService } from "../services/pioneer.service";
+import { PioneerService } from "../services/pioneer.service";
 
 export const pioneerRouter = createTRPCRouter({
   // SECTION - pioneer
@@ -14,26 +14,26 @@ export const pioneerRouter = createTRPCRouter({
     .input(createPioneerSchema)
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      return pioneerService.createPioneer(user.id, input);
+      return PioneerService.createPioneer(user.id, input);
     }),
 
   getPioneer: pioneerProcedure.query(async ({ ctx }) => {
     const user = ctx.session.user;
-    return pioneerService.getPioneerProfile(user.id);
+    return PioneerService.getPioneerProfile(user.id);
   }),
 
   update: pioneerProcedure
     .input(createPioneerSchema.partial())
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      return pioneerService.updatePioneerProfile(user.id, input);
+      return PioneerService.updatePioneerProfile(user.id, input);
     }),
 
   getCurrentPioneerAvailableDaySession: pioneerProcedure
     .input(z.object({ date: z.date() }))
     .query(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      return pioneerService.getCurrentPioneerAvailableDaySession(
+      return PioneerService.getCurrentPioneerAvailableDaySession(
         user.id,
         input.date,
       );
@@ -43,7 +43,7 @@ export const pioneerRouter = createTRPCRouter({
     .input(z.object({ date: z.date() }))
     .query(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      return pioneerService.getCurrentPioneerAvailableMonthSession(
+      return PioneerService.getCurrentPioneerAvailableMonthSession(
         user.id,
         input.date,
       );
@@ -58,10 +58,10 @@ export const pioneerRouter = createTRPCRouter({
       }),
     )
     .query(async ({ input }) => {
-      return pioneerService.getPioneerProfileForUser(input.pioneer_id);
+      return PioneerService.getPioneerProfileForUser(input.pioneer_id);
     }),
 
   getAll: protectedProcedure.query(async ({}) => {
-    return pioneerService.getAllPioneers();
+    return PioneerService.getAllPioneers();
   }),
 });

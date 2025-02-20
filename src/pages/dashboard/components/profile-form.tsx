@@ -13,9 +13,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { CreatePioneerFormValues } from "@/schemas/pioneer.schema";
-import { createPioneerInitialData, createPioneerSchema, updatePioneerSchema } from "@/schemas/pioneer.schema";
+import {
+  createPioneerInitialData,
+  createPioneerSchema,
+  updatePioneerSchema,
+} from "@/schemas/pioneer.schema";
 import type { UpdatePioneerFormValues } from "@/schemas/pioneer.schema";
-import  {type ExtractZODErrors, getZodErrors } from "@/schemas";
+import { type ExtractZODErrors, getZodErrors } from "@/schemas";
 import { useToast } from "@/hooks/use-toast";
 import { ShieldClose } from "lucide-react";
 import SubmitButton from "@/components/ui/submit-button";
@@ -25,20 +29,25 @@ import MultiSelect from "@/components/ui/multi-select";
 import MultiTextInput from "@/components/ui/multi-text-input";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import ValidationErrorBlock from "@/components/ui/validation-error-block";
 
 interface ProfileFormProps {
   initialData: Pioneer | null;
   mode: "update" | "create";
-  isLoading:boolean
+  isLoading: boolean;
 }
 
-export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProps) {
+export default function ProfileForm({
+  initialData,
+  mode,
+  isLoading,
+}: ProfileFormProps) {
   const createPioneerAction = api.pioneer.create.useMutation();
   const updatePioneerAction = api.pioneer.update.useMutation();
 
-  const [formData, setFormData] = useState<CreatePioneerFormValues | UpdatePioneerFormValues >(
-    initialData ?? createPioneerInitialData,
-  );
+  const [formData, setFormData] = useState<
+    CreatePioneerFormValues | UpdatePioneerFormValues
+  >(initialData ?? createPioneerInitialData);
 
   const [loading, setLoading] = useState(false);
 
@@ -63,7 +72,6 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
       [name]: type === "number" ? (value === "" ? "" : Number(value)) : value,
     }));
   };
-  
 
   const handleCheckboxChange = (checked: boolean) => {
     setFormData((prev) => ({ ...prev, available: checked }));
@@ -73,15 +81,13 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
     setFormData((prev) => ({ ...prev, skills: selectedSkills }));
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-  
     setLoading(true);
 
     try {
-      if (mode === 'update') {
+      if (mode === "update") {
         const result = updatePioneerSchema.safeParse(formData);
         if (!result.success) {
           setErrors(getZodErrors(updatePioneerSchema, formData));
@@ -104,7 +110,7 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
           title: "Profile created successfully",
           description: `Profile has been created`,
         });
-        Router.push('/dashboard')
+        Router.push("/dashboard");
       }
     } catch (error) {
       toast({
@@ -117,9 +123,9 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
     }
   };
 
-  if(isLoading) return <LoadingSkeleton/>
+  if (isLoading) return <LoadingSkeleton />;
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="mx-auto w-full max-w-4xl">
       <CardHeader>
         <CardTitle>{"معلومات الشخصية"}</CardTitle>
       </CardHeader>
@@ -134,63 +140,46 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
                 value={formData.title}
                 onChange={handleInputChange}
               />
-              {errors?.title && (
-                <p className="flex items-center text-sm text-red-500">
-                  <ShieldClose size={15} className="mr-1" />
-                  {errors.title}
-                </p>
-              )}
+              <ValidationErrorBlock error={errors?.title} />
             </div>
-            <div className="flex items-center justify-center w-full gap-2">
+            <div className="flex w-full items-center justify-center gap-2">
+              <div className="w-full space-y-2">
+                <Label htmlFor="experience">{"الخبرة"}</Label>
+                <Input
+                  id="experience"
+                  name="experience"
+                  type="number"
+                  min={0}
+                  value={formData.experience}
+                  onChange={handleInputChange}
+                />
+                <ValidationErrorBlock error={errors?.experience} />
+              </div>
+              <div className="w-full space-y-2">
+                <Label htmlFor="session_duration">{"مدة الجلسة"}</Label>
+                <Input
+                  id="session_duration"
+                  name="session_duration"
+                  type="number"
+                  min={0}
+                  value={formData.session_duration}
+                  onChange={handleInputChange}
+                />
+
+                <ValidationErrorBlock error={errors?.session_duration} />
+              </div>
+            </div>
+
             <div className="w-full space-y-2">
-              <Label htmlFor="experience">{"الخبرة"}</Label>
-              <Input
-                id="experience"
-                name="experience"
-                type="number"
-                value={formData.experience}
-                onChange={handleInputChange}
-              />
-              {errors?.experience && (
-                <p className="flex items-center text-sm text-red-500">
-                  <ShieldClose size={15} className="mr-1" />
-                  {errors.experience}
-                </p>
-              )}
-            </div>
-            <div className="w-full space-y-2">
-              <Label htmlFor="session_duration">{"مدة الجلسة"}</Label>
-              <Input
-                id="session_duration"
-                name="session_duration"
-                type="number"
-                value={formData.session_duration}
-                onChange={handleInputChange}
-              />
-              {errors?.experience && (
-                <p className="flex items-center text-sm text-red-500">
-                  <ShieldClose size={15} className="mr-1" />
-                  {errors.experience}
-                </p>
-              )}
-            </div>
-            </div>
-          
-            <div className="w-full space-y-2">
-              <Label htmlFor="bio">{"  نبذة تعريفية " }</Label>
+              <Label htmlFor="bio">{"  نبذة تعريفية "}</Label>
               <Textarea
                 id="bio"
                 name="bio"
                 value={formData.bio}
                 onChange={handleInputChange}
-                className="min-h-40 max-h-60"
+                className="max-h-60 min-h-40"
               />
-              {errors?.bio && (
-                <p className="flex items-center text-sm text-red-500">
-                  <ShieldClose size={15} className="mr-1" />
-                  {errors.bio}
-                </p>
-              )}
+              <ValidationErrorBlock error={errors?.bio} />
             </div>
             <div className="mt-2 flex w-full items-center gap-2 space-x-2">
               <Checkbox
@@ -216,12 +205,8 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
                 selected={formData.skills ?? []}
                 onChange={handleSkillsChange}
               />
-              {errors?.skills && (
-                <p className="flex items-center text-sm text-red-500">
-                  <ShieldClose size={15} className="mr-1" />
-                  {errors.skills}
-                </p>
-              )}
+
+              <ValidationErrorBlock error={errors?.skills} />
             </div>
             <div className="w-full space-y-4">
               <div className="space-y-2">
@@ -233,12 +218,8 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
                   onChange={handleInputChange}
                   placeholder="https://facebook.com/username"
                 />
-                {errors?.facebook && (
-                  <p className="flex items-center text-sm text-red-500">
-                    <ShieldClose size={15} className="mr-1" />
-                    {errors.facebook}
-                  </p>
-                )}
+
+                <ValidationErrorBlock error={errors?.facebook} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="instagram">حساب Instagram </Label>
@@ -249,12 +230,8 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
                   onChange={handleInputChange}
                   placeholder="https://instagram.com/username"
                 />
-                {errors?.instagram && (
-                  <p className="flex items-center text-sm text-red-500">
-                    <ShieldClose size={15} className="mr-1" />
-                    {errors.instagram}
-                  </p>
-                )}
+
+                <ValidationErrorBlock error={errors?.instagram} />
               </div>
             </div>
             <div className="w-full space-y-4">
@@ -267,12 +244,8 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
                   onChange={handleInputChange}
                   placeholder="https://twitter.com/username"
                 />
-                {errors?.twitter && (
-                  <p className="flex items-center text-sm text-red-500">
-                    <ShieldClose size={15} className="mr-1" />
-                    {errors.twitter}
-                  </p>
-                )}
+
+                <ValidationErrorBlock error={errors?.twitter} />
               </div>
             </div>
             <MultiTextInput
@@ -292,10 +265,10 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
         </CardContent>
         <CardFooter>
           <SubmitButton
-            loadingTitle={mode ==='update' ? "...تحديث" : "...انشاء"}
+            loadingTitle={mode === "update" ? "...تحديث" : "...انشاء"}
             loading={loading}
           >
-            {mode ==='update' ? "تحديث" : "انشاء"}
+            {mode === "update" ? "تحديث" : "انشاء"}
           </SubmitButton>
         </CardFooter>
       </form>
@@ -303,10 +276,9 @@ export default function ProfileForm({initialData,mode,isLoading}:ProfileFormProp
   );
 }
 
-
 function LoadingSkeleton() {
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="mx-auto w-full max-w-4xl">
       <CardHeader>
         <CardTitle>
           <Skeleton className="h-8 w-48" />
@@ -320,7 +292,7 @@ function LoadingSkeleton() {
             </Label>
             <Skeleton className="h-10 w-full" />
           </div>
-          <div className="flex items-center justify-center w-full gap-2">
+          <div className="flex w-full items-center justify-center gap-2">
             <div className="w-full space-y-2">
               <Label>
                 <Skeleton className="h-4 w-20" />
@@ -388,5 +360,5 @@ function LoadingSkeleton() {
         <Skeleton className="h-10 w-24" />
       </CardFooter>
     </Card>
-  )
+  );
 }

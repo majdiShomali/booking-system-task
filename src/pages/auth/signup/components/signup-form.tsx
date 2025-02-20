@@ -8,7 +8,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import SubmitButton from "@/components/ui/submit-button";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, ShieldClose } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import {
   SignupFormValues,
   signupSchema,
@@ -20,14 +20,12 @@ import { Icons } from "@/components/icons/icons";
 import { api } from "@/utils/api";
 import { signIn, useSession } from "next-auth/react";
 import { ERole } from "@prisma/client";
+import ValidationErrorBlock from "@/components/ui/validation-error-block";
 
 const SignUpForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
-
   const [errors, setErrors] =
     useState<ExtractZODErrors<SignupFormValues> | null>(null);
-
   const [formData, setFormData] = useState<SignupFormValues>(
     signupSchemaInitialData,
   );
@@ -56,7 +54,6 @@ const SignUpForm: React.FC = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
     try {
       const result = signupSchema.safeParse(formData);
 
@@ -96,8 +93,6 @@ const SignUpForm: React.FC = () => {
         action: <ToastAction altText="undo">{"Undo"}</ToastAction>,
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -165,14 +160,7 @@ const SignUpForm: React.FC = () => {
             autoComplete="email"
             placeholder="example@example.com"
           />
-          {errors?.email && (
-            <p className="flex items-center justify-start text-sm text-red-500">
-              <span className="text-xs text-red-500">
-                <ShieldClose size={15} />{" "}
-              </span>
-              {errors?.email}
-            </p>
-          )}
+          <ValidationErrorBlock error={errors?.email} />
         </div>
 
         <section className="flex w-full items-center justify-center gap-2">
@@ -189,14 +177,7 @@ const SignUpForm: React.FC = () => {
               placeholder="سارة احمد"
               // autoComplete="name"
             />
-            {errors?.name && (
-              <p className="flex items-center justify-start text-sm text-red-500">
-                <span className="text-xs text-red-500">
-                  <ShieldClose size={15} />{" "}
-                </span>
-                {errors?.name}
-              </p>
-            )}
+            <ValidationErrorBlock error={errors?.name} />
           </div>
         </section>
 
@@ -227,19 +208,11 @@ const SignUpForm: React.FC = () => {
               )}
             </Button>
           </div>
-
-          {errors?.password && (
-            <p className="flex items-center justify-start text-sm text-red-500">
-              <span className="text-xs text-red-500">
-                <ShieldClose size={15} />{" "}
-              </span>
-              {errors.password}
-            </p>
-          )}
+          <ValidationErrorBlock error={errors?.password} />
         </div>
 
         <SubmitButton
-          loading={loading}
+          loading={registerAction.isPending}
           loadingTitle="جاري التسجيل"
           className="mt-3 w-full"
         >
@@ -250,7 +223,7 @@ const SignUpForm: React.FC = () => {
           {"لديك حساب ؟"}
           <Link
             href={`/auth/login`}
-            className="font-medium text-primary hover:underline px-2"
+            className="px-2 font-medium text-primary hover:underline"
           >
             {"تسجيل الدخول"}
           </Link>

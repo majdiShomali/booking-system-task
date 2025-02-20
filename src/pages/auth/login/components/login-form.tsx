@@ -2,12 +2,11 @@
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
-import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/ui/submit-button";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, ShieldClose } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import {
   LoginFormValues,
   loginSchema,
@@ -18,6 +17,7 @@ import { getZodErrors, ExtractZODErrors } from "@/schemas";
 import { siteConfig } from "@/config/site";
 import { signIn, useSession } from "next-auth/react";
 import { ERole } from "@prisma/client";
+import ValidationErrorBlock from "@/components/ui/validation-error-block";
 
 const LogInForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -27,23 +27,21 @@ const LogInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] =
     useState<ExtractZODErrors<LoginFormValues> | null>(null);
-  const session = useSession();
-
   const { toast } = useToast();
+
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (session.data?.user) {
-      const role = session.data.user.role;
+    if (session?.user) {
+      const role = session.user.role;
       if (role === ERole.PIONEER) {
         router.push("/dashboard/profile");
-      }
-      if (role === ERole.USER) {
+      } else if (role === ERole.USER) {
         router.push("/");
       }
     }
-  }, [session.data?.user.role]);
-
+  }, [session?.user, router]);
   const onChangeHandler = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -107,12 +105,7 @@ const LogInForm: React.FC = () => {
             value={formData.email}
             autoComplete="email"
           />
-          {errors?.email && (
-            <p className="flex items-center text-sm text-red-500">
-              <ShieldClose size={15} className="mr-1" />
-              {errors.email}
-            </p>
-          )}
+          <ValidationErrorBlock error={errors?.email} />
         </div>
 
         <div className="relative w-full space-y-2">
@@ -141,12 +134,7 @@ const LogInForm: React.FC = () => {
               )}
             </Button>
           </div>
-          {errors?.password && (
-            <p className="flex items-center text-sm text-red-500">
-              <ShieldClose size={15} className="mr-1" />
-              {errors.password}
-            </p>
-          )}
+          <ValidationErrorBlock error={errors?.password} />
         </div>
 
         <SubmitButton
@@ -161,12 +149,11 @@ const LogInForm: React.FC = () => {
           ليس لديك حساب؟
           <Link
             href={siteConfig.pages.signup}
-            className="font-medium text-primary hover:underline space-x-2 px-2"
+            className="space-x-2 px-2 font-medium text-primary hover:underline"
           >
             تسجيل
           </Link>
         </p>
-
       </form>
     </section>
   );

@@ -9,7 +9,7 @@ export default function ProfilePage() {
   return (
     <div className="mb-5 h-full w-full flex-col items-center justify-center">
       <div className="mb-5 bg-accent p-5 text-center">
-        <h1 className="mb-4 text-right text-4xl font-bold">
+        <h1 className="mb-4 text-center text-4xl font-bold">
           املأ النموذج الآن!
         </h1>
         <p className="mb-6 text-right text-xl"></p>

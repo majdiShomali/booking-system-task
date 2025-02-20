@@ -1,18 +1,18 @@
 import { db } from "@/server/db";
 import type { ERole } from "@prisma/client";
 
-export const userRepository = {
-  async findUserByEmail(email: string) {
+export class UserRepository {
+  static async findUserByEmail(email: string) {
     return db.user.findUnique({
       where: { email },
     });
-  },
-  async findUserById(userid: string) {
+  }
+
+  static async findUserById(userid: string) {
     return db.user.findUnique({ where: { id: userid } });
-  },
+  }
 
-
-  async createUser(data: {
+  static async createUser(data: {
     name: string;
     email: string;
     hash: string;
@@ -20,5 +20,5 @@ export const userRepository = {
     role: ERole;
   }) {
     return db.user.create({ data });
-  },
-};
+  }
+}

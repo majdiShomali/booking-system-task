@@ -1,58 +1,64 @@
 import { startOfDay, endOfDay, startOfMonth, endOfMonth } from "date-fns";
-import { pioneerRepository } from "../repositories/pioneer.repository";
+import { PioneerRepository } from "../repositories/pioneer.repository";
 import type { TPioneer } from "@/types/pioneer.types";
 import type { CreatePioneerFormValues } from "@/schemas/pioneer.schema";
-import { sessionService } from "./session.service";
+import { SessionService } from "./session.service";
 
-export const pioneerService = {
+export class PioneerService {
   // SECTION - pioneer
-  async createPioneer(userId: string, input: CreatePioneerFormValues) {
-    return pioneerRepository.createPioneer(
+  static async createPioneer(userId: string, input: CreatePioneerFormValues) {
+    return PioneerRepository.createPioneer(
       {
         ...input,
       },
       userId,
     );
-  },
-  async getPioneerProfile(userId: string) {
-    return pioneerRepository.findPioneerByUserId(userId);
-  },
-  async getPioneerProfileForUser(pioneerId: string) {
-    return pioneerRepository.findPioneerById(pioneerId);
-  },
+  }
+  static async getPioneerProfile(userId: string) {
+    return PioneerRepository.findPioneerByUserId(userId);
+  }
+  static async getPioneerProfileForUser(pioneerId: string) {
+    return PioneerRepository.findPioneerById(pioneerId);
+  }
 
-  async getAllPioneers() {
-    return pioneerRepository.findAllPioneers();
-  },
+  static async getAllPioneers() {
+    return PioneerRepository.findAllPioneers();
+  }
 
-  async updatePioneerProfile(userId: string, input: Partial<TPioneer>) {
-    const existingPioneer = await pioneerRepository.findPioneerByUserId(userId);
+  static async updatePioneerProfile(userId: string, input: Partial<TPioneer>) {
+    const existingPioneer = await PioneerRepository.findPioneerByUserId(userId);
     if (!existingPioneer) throw new Error("Profile not found");
 
-    return pioneerRepository.updatePioneer(userId, input);
-  },
+    return PioneerRepository.updatePioneer(userId, input);
+  }
 
-  async getCurrentPioneerAvailableDaySession(userId: string, date: Date) {
+  static async getCurrentPioneerAvailableDaySession(
+    userId: string,
+    date: Date,
+  ) {
     const startOfDayUTC = startOfDay(date).toISOString();
     const endOfDayUTC = endOfDay(date).toISOString();
-    const pioneer = await pioneerRepository.findPioneerByUserId(userId);
+    const pioneer = await PioneerRepository.findPioneerByUserId(userId);
     if (!pioneer) throw new Error("Could not find pioneer");
-    return sessionService.getPioneerAvailableSessions(
+    return SessionService.getPioneerAvailableSessions(
       { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
       pioneer.id,
     );
-  },
+  }
 
-  async getCurrentPioneerAvailableMonthSession(userId: string, date: Date) {
+  static async getCurrentPioneerAvailableMonthSession(
+    userId: string,
+    date: Date,
+  ) {
     const startOfDayUTC = startOfMonth(date).toISOString();
     const endOfDayUTC = endOfMonth(date).toISOString();
-    const pioneer = await pioneerRepository.findPioneerByUserId(userId);
+    const pioneer = await PioneerRepository.findPioneerByUserId(userId);
 
     if (!pioneer) throw new Error("Could not find pioneer");
 
-    return sessionService.getPioneerAvailableSessions(
+    return SessionService.getPioneerAvailableSessions(
       { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
       pioneer.id,
     );
-  },
-};
+  }
+}

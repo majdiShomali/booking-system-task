@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -9,21 +9,21 @@ import constants from "@/constants/constants";
 
 interface CalendarProps {
   locale?: string;
-  selectedDate: Date  | null;
+  selectedDate: Date | null;
   onDateSelect?: (date: Date) => void;
   events?: Date[];
   sessionDuration?: number;
-  onChangeMonth?:(date: Date) => void;
+  onChangeMonth?: (date: Date) => void;
 }
 
-export default function Calendar({
+const Calendar: React.FC<CalendarProps> = ({
   locale = "ar-SA",
   selectedDate,
   onDateSelect,
   events = [],
-  sessionDuration =60 ,
-  onChangeMonth
-}: CalendarProps) {
+  sessionDuration = 60,
+  onChangeMonth,
+}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const getDaysInMonth = (date: Date) => {
@@ -55,21 +55,26 @@ export default function Calendar({
 
   const days = getDaysInMonth(currentDate);
 
-
   const handlePrevMonth = () => {
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
+    const date = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+    );
     setCurrentDate(date);
-    if(onChangeMonth){
-      onChangeMonth(date)
+    if (onChangeMonth) {
+      onChangeMonth(date);
     }
   };
 
   const handleNextMonth = () => {
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
+    const date = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+    );
 
     setCurrentDate(date);
-    if(onChangeMonth){
-      onChangeMonth(date)
+    if (onChangeMonth) {
+      onChangeMonth(date);
     }
   };
 
@@ -134,4 +139,6 @@ export default function Calendar({
       </div>
     </Card>
   );
-}
+};
+
+export default memo(Calendar);

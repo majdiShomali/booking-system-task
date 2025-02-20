@@ -14,7 +14,7 @@ import { ZodError } from "zod";
 import { db } from "@/server/db";
 import { getServerSession, type Session } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import { pioneerService } from "./services/pioneer.service";
+import { PioneerService } from "./services/pioneer.service";
 import { ERole } from "@prisma/client";
 
 /**
@@ -151,7 +151,7 @@ const isPioneer = t.middleware(async({ ctx, next }) => {
   if (ctx.session?.user.role !== ERole.PIONEER) {
     throw new TRPCError({ code: "FORBIDDEN" });
   }
-  const pioneer =  await pioneerService.getPioneerProfile(ctx.session.user.id)
+  const pioneer =  await PioneerService.getPioneerProfile(ctx.session.user.id)
   
   return next({
     ctx: {

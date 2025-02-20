@@ -1,15 +1,33 @@
 import { type CreateAvailableSessionFormValues } from "@/schemas/available-session.schema";
 import { db } from "@/server/db";
-
-export const sessionRepository = {
-  async createAvailableSession(
+// setInterval(async () => {
+//   await db.bookedSession.deleteMany({
+//     where: {
+//       status: 'PENDING',
+//       createdAt: { lt: new Date(Date.now() - 15*60*1000) } // 15min expiration
+//     }
+//   });
+// }, 5*60*1000); // Run every 5 minutes
+export class SessionRepository {
+  static async createAvailableSession(
     data: CreateAvailableSessionFormValues,
-    pioneer_id: string,
+    pioneerId: string,
   ) {
-    return db.availableSession.create({ data: { ...data, pioneer_id } });
-  },
+    // const overlapping = await db.availableSession.findFirst({
+    //   where: {
+    //     pioneer_id: pioneerId,
+    //     OR: [
+    //       { startTime: { lte: newStart }, endTime: { gte: newStart } },
+    //       { startTime: { lte: newEnd }, endTime: { gte: newEnd } }
+    //     ]
+    //   }
+    // });
+    return db.availableSession.create({
+      data: { ...data, pioneer_id: pioneerId },
+    });
+  }
 
-  async findPioneerAvailableSessions(
+  static async findPioneerAvailableSessions(
     date: { startOfDay: string; endOfDay: string },
     pioneerId: string,
   ) {
@@ -23,5 +41,20 @@ export const sessionRepository = {
         available: true,
       },
     });
-  },
-};
+  }
+  
+  static async findAvailableSessionById(sessionId: string) {
+    return db.availableSession.findUnique({
+      where: { id: sessionId,available:true },
+    });
+  }
+
+  static async markSessionAsUnavailable(sessionId: string) {
+    return db.availableSession.update({
+      where: { id: sessionId },
+      data: { available: false },
+    });
+  }
+
+
+}

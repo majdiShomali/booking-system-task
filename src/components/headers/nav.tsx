@@ -11,9 +11,11 @@ const Navbar = () => {
   const { data: session } = useSession();
 
   return (
-    <nav className="sticky top-0 z-[11] h-[7vh] flex w-full items-center justify-between rounded-bl-lg rounded-br-lg bg-background backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-[11] flex h-[7vh] w-full items-center justify-between rounded-bl-lg rounded-br-lg bg-background backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Link
-        href={siteConfig.pages[session?.user.role as ERole ?? ERole.USER].home}
+        href={
+          siteConfig.pages[(session?.user.role as ERole) ?? ERole.USER].home
+        }
         className="flex items-center justify-start gap-2 overflow-hidden rounded-md lg:w-1/3"
       >
         <Image
@@ -23,7 +25,7 @@ const Navbar = () => {
           width={30}
           height={30}
           className="rounded-r-lg"
-          sizes="800"
+          style={{ width: "auto", height: "auto" }}
         />
 
         <p className="text-lg font-semibold uppercase">{siteConfig.name}</p>
@@ -41,7 +43,6 @@ const Navbar = () => {
             <Button>تسجيل الدخول</Button>
           </Link>
         )}
- 
       </section>
     </nav>
   );

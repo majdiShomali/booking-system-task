@@ -4,7 +4,7 @@ import type { SessionStrategy, User, Session } from "next-auth";
 import { type JWT } from "next-auth/jwt";
 import authHelper from "@/helpers/auth.helper";
 import { siteConfig } from "@/config/site";
-import { userService } from "@/server/api/services/user.service";
+import { UserService } from "@/server/api/services/user.service";
 
 export const authOptions = {
   providers: [
@@ -15,12 +15,15 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("credentials")
+        console.log(credentials)
+        console.log("credentials")
         if (!credentials?.email) {
           return null;
         }
 
         try {
-          const user = await userService.getUserByEmail(credentials.email);
+          const user = await UserService.getUserByEmail(credentials.email);
           if (!user) {
             return null;
           }

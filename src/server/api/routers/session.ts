@@ -1,6 +1,6 @@
 import { createTRPCRouter, pioneerProcedure,protectedProcedure } from "@/server/api/trpc";
 import { createAvailableSessionSchema } from "@/schemas/available-session.schema";
-import { sessionService } from "../services/session.service";
+import { SessionService } from "../services/session.service";
 import { z } from "zod";
 
 
@@ -11,7 +11,7 @@ export const sessionRouter = createTRPCRouter({
     .input(createAvailableSessionSchema)
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
-      return sessionService.createAvailableSession(user.id, input);
+      return SessionService.createAvailableSession(user.id, input);
     }),
 
     
@@ -20,7 +20,7 @@ export const sessionRouter = createTRPCRouter({
   getPioneerAvailableDaySession: protectedProcedure
     .input(z.object({ date: z.date(), pioneer_id: z.string() }))
     .query(async ({ input }) => {
-      return sessionService.getPioneerAvailableDaySession(
+      return SessionService.getPioneerAvailableDaySession(
         input.pioneer_id,
         input.date,
       );
@@ -29,7 +29,7 @@ export const sessionRouter = createTRPCRouter({
   getPioneerAvailableMonthSession: protectedProcedure
     .input(z.object({ date: z.date(), pioneer_id: z.string() }))
     .query(async ({ input }) => {
-      return sessionService.getPioneerAvailableMonthSession(
+      return SessionService.getPioneerAvailableMonthSession(
         input.pioneer_id,
         input.date,
       );
@@ -43,7 +43,7 @@ export const sessionRouter = createTRPCRouter({
   //      }),
   //    )
   //    .query(async ({ input }) => {
-  //      return sessionService.getPioneerProfileForUser(input.pioneer_id);
+  //      return SessionService.getPioneerProfileForUser(input.pioneer_id);
   //    }),
     
 

@@ -22,7 +22,6 @@ enum BookingStatus {
   COMPLETED
 }
 
-
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -31,54 +30,63 @@ model User {
   salt      String
   image     String?
   verified  Boolean  @default(false)
-  createdAt DateTime @default(now()) 
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  role      ERole    @default(USER)
+  role ERole @default(USER)
 
-  pioneer Pioneer? @relation
-  bookedSessions BookedSession[]  
-
+  pioneer        Pioneer?        @relation
+  bookedSessions BookedSession[]
 }
 
 model Pioneer {
-  id           String @id @default(uuid())
-  title        String
-  experience   Int
-  session_duration   Float
-  bio          String
-  available    Boolean
-  skills       String[] 
-  additional_information  String[] 
-  facebook     String?
-  instagram    String?
-  twitter    String?
+  id                     String   @id @default(uuid())
+  title                  String
+  experience             Int
+  session_duration       Float
+  bio                    String
+  available              Boolean
+  skills                 String[]
+  additional_information String[]
+  facebook               String?
+  instagram              String?
+  twitter                String?
 
   user    User   @relation(fields: [user_id], references: [id])
   user_id String @unique
 
- availableSessions AvailableSession[]
-
+  availableSessions AvailableSession[]
 }
+
 model AvailableSession {
   id         String   @id @default(uuid())
   date       DateTime @db.Timestamptz
+  // startTime  DateTime @db.Timestamptz
+  // endTime    DateTime @db.Timestamptz // NOTE -// Calculate using session_duration 
   available  Boolean
   pioneer    Pioneer  @relation(fields: [pioneer_id], references: [id], onDelete: Cascade)
-  pioneer_id  String
+  pioneer_id String
 
-  bookedSession BookedSession?  
+  bookedSession BookedSession?
 
+  version Int @default(1)
+
+  @@index([pioneer_id])
+  @@index([date])
 }
 
 model BookedSession {
-  id                  String            @id @default(uuid())
-  user                User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id             String
-  availableSession    AvailableSession  @relation(fields: [available_session_id], references: [id], onDelete: Cascade)
-  available_session_id String @unique  
-  status              BookingStatus     @default(PENDING)
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-}
+  id                   String           @id @default(uuid())
+  user                 User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id              String
+  availableSession     AvailableSession @relation(fields: [available_session_id], references: [id], onDelete: Cascade)
+  available_session_id String           @unique
+  status               BookingStatus    @default(PENDING)
+  bookedAt             DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  // expiresAt            DateTime // NOTE -// For reservation expiration
+  cancellationReason   String?
 
+  @@index([user_id])
+  @@index([status])
+}

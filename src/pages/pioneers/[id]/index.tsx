@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import BookSessionForm from "./components/book-session-form";
+import BookSessionForm from "./components/booking-session-form";
 
 const PioneerPage: NextPage = () => {
   return (

@@ -3,6 +3,7 @@
 This project is built with the powerful [T3 Stack](https://create.t3.gg/), providing a robust and scalable full-stack solution.
 
 🔗 **Live Demo:** [Visit Booking System Task](https://booking-system-task.vercel.app/)
+> **Note:** Real-time updates are not configured in the production environment..
 
 ---
 
@@ -27,6 +28,7 @@ Follow these steps to run the project locally.
 ```sh
 git clone https://github.com/majdiShomali/booking-system-task.git
 cd booking-system-task
+code .
 ```
 
 ### 📦 Install Dependencies
@@ -62,7 +64,7 @@ npx prisma db push
 ```sh
 npx prisma db seed
 ```
-##### 3️ Accounts
+##### Accounts
 **Please use this account to add available times or create new ones.You can also create new pioneer accounts.** 
 
 **Email**
@@ -89,5 +91,4 @@ Your application should now be running at `http://localhost:3000/` 🎉.
 
 This project is open-source and available under the [MIT License](LICENSE).
 
-🚀 Happy Coding!
 

@@ -14,7 +14,7 @@ interface ValueEntry {
 import React from "react";
 type Props = {
   onChange: (name: string, data: string[]) => void;
-  initialData: string[];
+  initialData?: string[];
   title: string;
   name: string;
 };
@@ -27,11 +27,11 @@ const MultiTextInput: React.FC<Props> = ({
   const [values, setValues] = useState<ValueEntry[]>([{ id: 0, value: "" }]);
 
   useEffect(() => {
-    const data =
-      initialData?.map((value, id) => {
-        return { id, value };
-      }) ?? [];
-    setValues(data);
+    setValues(
+      initialData?.length
+        ? initialData.map((value, id) => ({ id, value }))
+        : [{ id: 0, value: "" }],
+    );
   }, [initialData]);
 
   const addValue = () => {

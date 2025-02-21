@@ -1,9 +1,12 @@
 import { api } from "@/utils/api";
-import PioneerCard, { PioneerCardSkeleton, PrivatePioneerCard } from "./pioneer-card";
+import PioneerCard, {
+  EmptyPioneerCard,
+  PioneerCardSkeleton,
+  PrivatePioneerCard,
+} from "./pioneer-card";
 import { Session } from "next-auth";
 
 const AllPioneers: React.FC<{ session: Session }> = ({ session }) => {
-  
   const { data: pioneers, isLoading } = api.pioneer.getAll.useQuery();
 
   if (!session?.user?.id) {
@@ -12,6 +15,10 @@ const AllPioneers: React.FC<{ session: Session }> = ({ session }) => {
 
   if (isLoading && session?.user.id) {
     return <PioneerCardSkeleton />;
+  }
+
+  if (!isLoading && session?.user.id && pioneers?.length === 0) {
+    return <EmptyPioneerCard />;
   }
 
   return (

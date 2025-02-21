@@ -37,7 +37,7 @@ const PioneerSessionForm = () => {
 
   if (!pioneer?.id && !isPioneerLoading) {
     return (
-      <div className="flex h-full w-full items-center justify-center ">
+      <div className="flex min-h-[70vh] w-full items-center justify-center ">
         <p className="border-2 border-red-500 border-dashed p-3 rounded-md">
           {" "}
           الرجاء انشاء الحساب <Link href="/dashboard/profile"><Button variant={'outline'}>انشاء</Button></Link>

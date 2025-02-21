@@ -11,6 +11,7 @@ export const siteConfig = {
     github: "",
   },
   pages:{
+    home:'/',
     login:"/auth/login",
     signup:"/auth/signup",
     PIONEER:{

@@ -21,7 +21,6 @@ import {
 import type { UpdatePioneerFormValues } from "@/schemas/pioneer.schema";
 import { type ExtractZODErrors, getZodErrors } from "@/schemas";
 import { useToast } from "@/hooks/use-toast";
-import { ShieldClose } from "lucide-react";
 import SubmitButton from "@/components/ui/submit-button";
 import { api } from "@/utils/api";
 import type { Pioneer } from "@prisma/client";
@@ -30,6 +29,7 @@ import MultiTextInput from "@/components/ui/multi-text-input";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import ValidationErrorBlock from "@/components/ui/validation-error-block";
+import { siteConfig } from "@/config/site";
 
 interface ProfileFormProps {
   initialData: Pioneer | null;
@@ -49,9 +49,6 @@ export default function ProfileForm({
     CreatePioneerFormValues | UpdatePioneerFormValues
   >(initialData ?? createPioneerInitialData);
 
-  console.log("formData")
-  console.log(formData)
-  console.log("formData")
 
   const [loading, setLoading] = useState(false);
 
@@ -125,7 +122,7 @@ export default function ProfileForm({
           title: "Profile created successfully",
           description: `Profile has been created`,
         });
-        Router.push("/dashboard");
+        Router.push(siteConfig.pages.PIONEER.home);
       }
     } catch (error) {
       toast({
@@ -264,7 +261,7 @@ export default function ProfileForm({
               </div>
             </div>
             <MultiTextInput
-              initialData={formData.additional_information ?? []}
+              initialData={formData.additional_information}
               title="معلومات اضافية"
               name="additional_information"
               onChange={(name,value) => {

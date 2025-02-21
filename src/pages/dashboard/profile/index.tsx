@@ -2,12 +2,11 @@ import { api } from "@/utils/api";
 import ProfileForm from "../components/profile-form";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/config/site";
 
 export default function ProfilePage() {
   const { data,  isLoading } = api.pioneer.getPioneer.useQuery();
-console.log("data")
-console.log(data)
-console.log("data")
+
   return (
     <div className="mb-5 h-full w-full flex-col items-center justify-center">
       <div className="mb-5 bg-accent p-5 text-center">
@@ -17,7 +16,7 @@ console.log("data")
         <p className="mb-6 text-right text-xl"></p>
         {data?.id ? (
           <Link
-            href="/dashboard"
+            href={siteConfig.pages.PIONEER.home}
             className=""
           >
             <Button variant={'outline'} className=''>

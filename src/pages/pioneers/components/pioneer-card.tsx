@@ -1,7 +1,7 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Clock, Facebook, Instagram, Twitter } from "lucide-react";
+import { Clock, Facebook, Frown, Instagram, Sun, Twitter } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
@@ -11,10 +11,10 @@ import type { TPioneer } from "@/types/pioneer.types";
 import { siteConfig } from "@/config/site";
 
 const PioneerCard: React.FC<{ pioneer: TPioneer }> = ({ pioneer }) => {
-  if(!pioneer?.id) return <PrivatePioneerCard/>
+  if (!pioneer?.id) return <PrivatePioneerCard />;
   return (
     <Link
-      className="w-full"
+      className="w-full lg:w-fit"
       href={`${siteConfig.pages.USER.pioneers}/${pioneer.id}`}
     >
       <Card className="w-full overflow-hidden transition-all hover:shadow-lg lg:w-96">
@@ -202,6 +202,23 @@ const PrivatePioneerCard: React.FC = () => {
     </div>
   );
 };
+const EmptyPioneerCard: React.FC = () => {
+  return (
+    <Card className="mx-auto w-full max-w-md">
+      <CardContent className="p-6 text-center">
+        <Frown className="mx-auto mb-4 h-16 w-16 text-yellow-500" />
+        <h2 className="mb-2 text-2xl font-bold">
+          عذراً، لا يوجد مستشارين حالياً
+        </h2>
+        <p className="mb-4 text-muted-foreground">شكراً لتفهمك وصبرك</p>
+        <div className="flex items-center justify-center">
+          <Sun className="mr-2 h-6 w-6 animate-pulse text-yellow-500" />
+          <span className="text-sm">سنعود قريباً بمزيد من المستشارين</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 export default PioneerCard;
-export{ PrivatePioneerCard, PioneerCardSkeleton }
+export { PrivatePioneerCard, PioneerCardSkeleton, EmptyPioneerCard };

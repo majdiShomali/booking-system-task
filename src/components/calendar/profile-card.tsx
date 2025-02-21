@@ -16,7 +16,7 @@ export default function ProfileCard({ pioneer, loading = false }: ProfileCardPro
     return <ProfileCardSkeleton />
   }
 
-  if (!pioneer) {
+  if (!pioneer?.id) {
     return null
   }
 

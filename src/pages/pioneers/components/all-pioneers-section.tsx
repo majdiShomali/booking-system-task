@@ -2,10 +2,9 @@
 import { api } from "@/utils/api";
 import type React from "react";
 import { useSession } from "next-auth/react";
-import {
+import PioneerCard, {
   PioneerCardSkeleton,
   PrivatePioneerCard,
-  PioneerCard,
 } from "./pioneer-card";
 
 const AllPioneers: React.FC = () => {

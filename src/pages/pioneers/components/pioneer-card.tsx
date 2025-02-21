@@ -1,8 +1,6 @@
 "use client";
-
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { api } from "@/utils/api";
 import { Clock, Facebook, Instagram, Twitter } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,10 +8,10 @@ import type React from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { TPioneer } from "@/types/pioneer.types";
-import { useSession } from "next-auth/react";
 import { siteConfig } from "@/config/site";
 
 const PioneerCard: React.FC<{ pioneer: TPioneer }> = ({ pioneer }) => {
+  if(!pioneer?.id) return <PrivatePioneerCard/>
   return (
     <Link
       className="w-full"
@@ -205,4 +203,5 @@ const PrivatePioneerCard: React.FC = () => {
   );
 };
 
-export { PioneerCard, PrivatePioneerCard, PioneerCardSkeleton };
+export default PioneerCard;
+export{ PrivatePioneerCard, PioneerCardSkeleton }

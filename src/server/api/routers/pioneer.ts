@@ -28,25 +28,8 @@ export const pioneerRouter = createTRPCRouter({
       return PioneerService.updatePioneerProfile(user.id, input);
     }),
 
-  getCurrentPioneerAvailableDaySession: pioneerProcedure
-    .input(z.object({ date: z.date() }))
-    .query(async ({ ctx, input }) => {
-      const user = ctx.session.user;
-      return PioneerService.getCurrentPioneerAvailableDaySession(
-        user.id,
-        input.date,
-      );
-    }),
 
-  getCurrentPioneerAvailableMonthSession: pioneerProcedure
-    .input(z.object({ date: z.date() }))
-    .query(async ({ ctx, input }) => {
-      const user = ctx.session.user;
-      return PioneerService.getCurrentPioneerAvailableMonthSession(
-        user.id,
-        input.date,
-      );
-    }),
+
 
   // SECTION - User
   // NOTE: In the future, we may restrict access to certain fields for users.

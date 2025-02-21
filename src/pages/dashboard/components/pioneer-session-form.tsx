@@ -16,22 +16,24 @@ const PioneerSessionForm = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
 
-  const { data: pioneerAvailableSession,isLoading:isAvailableSessioLoading} =
-    api.pioneer.getCurrentPioneerAvailableDaySession.useQuery(
-      { date: timeHelper.convertLocalDateToUTC(selectedDate) },
-      {
-        enabled: !!selectedDate,
-      },
-    );
   const { data: pioneer,isLoading:isPioneerLoading } = api.pioneer.getPioneer.useQuery();
 
-  const { data: pioneerAvailableMonthSession } =
-    api.pioneer.getCurrentPioneerAvailableMonthSession.useQuery(
-      { date: timeHelper.convertLocalDateToUTC(selectedMonth) },
+  const { data: pioneerAvailableSession,isLoading:isAvailableSessioLoading} =
+    api.session.getCurrentPioneerAvailableDaySession.useQuery(
+      { date: timeHelper.toUTCDate(selectedDate)?.toISOString(),pioneer_id:pioneer?.id ?? ''  },
       {
-        enabled: !!selectedMonth,
+        enabled: !!selectedDate && !!pioneer?.id,
       },
     );
+
+  const { data: pioneerAvailableMonthSession } =
+    api.session.getCurrentPioneerAvailableMonthSession.useQuery(
+      { date: timeHelper.toUTCDate(selectedMonth)?.toISOString(),pioneer_id:pioneer?.id ?? '' },
+      {
+        enabled: !!selectedMonth && !!pioneer?.id,
+      },
+    );
+
 
   if (!pioneer?.id && !isPioneerLoading) {
     return (

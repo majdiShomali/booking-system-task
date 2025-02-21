@@ -1,5 +1,5 @@
-import { SignupFormValues } from "@/schemas/signup.schema";
-import { AvailableSession, Pioneer, PrismaClient, User } from "@prisma/client";
+import { PrismaClient} from "@prisma/client";
+import { fromZonedTime} from "date-fns-tz";
 
 enum ERole {
   USER = "USER",
@@ -7,14 +7,19 @@ enum ERole {
 }
 
 const prisma = new PrismaClient();
-const convertHourToIso = (hour: number) => {
-  const todayAtThreePM = new Date();
-  todayAtThreePM.setHours(hour, 0, 0, 0);
-  const isoString = todayAtThreePM.toISOString();
-  return isoString;
+
+const convertHourToIso = (hour: number, timeZone: string) => {
+  const localTodayDate = new Date();
+  localTodayDate.setHours(hour, 0, 0, 0);
+  const utcDate = fromZonedTime(localTodayDate, timeZone);
+  return utcDate.toISOString();
 };
 
-
+const isSessionAvailable = (sessionIsoDate: string) => {
+  const sessionDate = new Date(sessionIsoDate);
+  const nowUtc = new Date();
+  return sessionDate > nowUtc;
+};
 
 async function createUser(userData: any) {
   return prisma.user.upsert({
@@ -32,18 +37,35 @@ async function createPioneer(pioneerData: any) {
   });
 }
 async function createSessions(sessionData: any) {
-  return prisma.availableSession.upsert({
-    where: {id:crypto.randomUUID() },
-    update: {},
-    create: { ...sessionData },
+  const existingSession = await prisma.availableSession.findUnique({
+    where: {
+      pioneer_id_date: {
+        pioneer_id: sessionData.pioneer_id,
+        date: sessionData.date,
+      },
+    },
   });
+
+  if (existingSession) {
+    return prisma.availableSession.update({
+      where: {
+        id: existingSession.id,
+      },
+      data: {
+        ...sessionData,
+      },
+    });
+  } else {
+    return prisma.availableSession.create({
+      data: {
+        ...sessionData,
+      },
+    });
+  }
 }
 
 async function main() {
   try {
-
-
-
     const userData = [
       {
         email: "saraahmad@gmail.com",
@@ -56,7 +78,9 @@ async function main() {
     ];
 
     const users = await Promise.all(userData.map(createUser));
-    const saraAhmad = users.find((user) => user.email === "saraahmad@gmail.com");
+    const saraAhmad = users.find(
+      (user) => user.email === "saraahmad@gmail.com",
+    );
 
     if (!saraAhmad) {
       throw new Error("User creation failed, missing Sara Ahmad.");
@@ -88,55 +112,27 @@ async function main() {
       },
     ];
 
-   const pioneers= await Promise.all(pioneersData.map(createPioneer));
+    const pioneers = await Promise.all(pioneersData.map(createPioneer));
 
-   const saraAhmadInfo = pioneers.find((pioneer)=>pioneer.user_id === saraAhmad.id)
+    const saraAhmadInfo = pioneers.find(
+      (pioneer) => pioneer.user_id === saraAhmad.id,
+    );
+    const saraTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-   const sessionsData = [
-    {
-      date: convertHourToIso(9),
-      available: true,
-      pioneer_id: saraAhmadInfo?.id ?? '',
-    },
-    {
-      date: convertHourToIso(10),
-      available: true,
-      pioneer_id: saraAhmadInfo?.id ?? '',
-    },
-    {
-      date: convertHourToIso(11),
-      available: true,
-      pioneer_id: saraAhmadInfo?.id ?? '',
-    },
-    {
-      date: convertHourToIso(12),
-      available: true,
-      pioneer_id: saraAhmadInfo?.id ?? '',
-    },
-    {
-      date: convertHourToIso(13),
-      available: true,
-      pioneer_id: saraAhmadInfo?.id ?? '',
-    },
-    {
-      date: convertHourToIso(14),
-      available: true,
-      pioneer_id: saraAhmadInfo?.id ?? '',
-    },
-    {
-      date: convertHourToIso(15),
-      available: true,
-      pioneer_id: saraAhmadInfo?.id ?? '',
-    },
-    {
-      date: convertHourToIso(16),
-      available: true,
-      pioneer_id: saraAhmadInfo?.id ?? '',
-    },
-  ];
+    const saraHourSessions = [9, 10, 11, 12, 13, 14, 15, 16,17,18,19,20,21,22,23];
+    const saraAvailableSessions = saraHourSessions?.map((hour) => {
+      const date = convertHourToIso(hour, saraTimeZone);
+      return {
+        date: date,
+        available: isSessionAvailable(date),
+        pioneer_id: saraAhmadInfo?.id ?? "",
+        time_zone: saraTimeZone,
+      };
+    });
 
-  const sessions= await Promise.all(sessionsData.map(createSessions));
-
+    const sessions = await Promise.all(
+      saraAvailableSessions.map(createSessions),
+    );
 
     console.log("Seeding completed!🪧");
   } catch (error) {
@@ -146,8 +142,7 @@ async function main() {
   }
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

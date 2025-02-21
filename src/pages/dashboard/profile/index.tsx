@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 
 export default function ProfilePage() {
   const { data,  isLoading } = api.pioneer.getPioneer.useQuery();
-
+console.log("data")
+console.log(data)
+console.log("data")
   return (
     <div className="mb-5 h-full w-full flex-col items-center justify-center">
       <div className="mb-5 bg-accent p-5 text-center">

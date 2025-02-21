@@ -15,6 +15,9 @@ import { api } from "@/utils/api";
 import timeHelper from "@/helpers/time.helper";
 import type { TPeriod } from "@/types/types";
 import { Skeleton } from "../ui/skeleton";
+import { ToastAction } from "../ui/toast";
+import pioneerConstants from "@/constants/pioneer.constants";
+import constants from "@/constants/constants";
 
 interface AvailableTime {
   hour: string;
@@ -24,113 +27,123 @@ interface AvailableTime {
 export function AvailableTimes({
   initialTimes = [],
   selectedDate,
-  loading
+  loading,
 }: {
   selectedDate: Date;
   initialTimes?: AvailableTime[];
-  loading:boolean
+  loading: boolean;
 }) {
-
   const [times, setTimes] = React.useState<AvailableTime[]>(initialTimes);
   const [newHour, setNewHour] = React.useState("");
   const [newPeriod, setNewPeriod] = React.useState<TPeriod>("AM");
   const { toast } = useToast();
+  
   React.useEffect(() => {
-      setTimes(initialTimes)
-  },[initialTimes])
-
+    setTimes(initialTimes);
+  }, [initialTimes]);
 
   const createAvailableSession =
     api.session.createAvailableSession.useMutation();
 
   const addTime = async () => {
-    if (newHour && newPeriod) {
-      const hour = Number.parseInt(newHour);
-      if (hour >= 1 && hour <= 12) {
-        const newTime = { hour: newHour, period: newPeriod };
-        if (
-          times.some(
-            (time) =>
-              time.hour === newTime.hour && time.period === newTime.period,
-          )
-        ) {
-          toast({
-            title: "Time already exists",
-            description: `${newHour} ${newPeriod} is already in the list.`,
-            variant: "destructive",
-          });
-        } else {
-          setTimes((prevTimes) =>
-            [...prevTimes, newTime].sort((a, b) => {
-              const aHour =
-                Number.parseInt(a.hour) + (a.period === "PM" ? 12 : 0);
-              const bHour =
-                Number.parseInt(b.hour) + (b.period === "PM" ? 12 : 0);
-              return aHour - bHour;
-            }),
-          );
-          setNewHour("");
-          toast({
-            title: "Time added",
-            description: `${newHour} ${newPeriod} has been added to the list.`,
-          });
-          const dateUtc = timeHelper.convertUserInputToUTC({
-            date: selectedDate,
-            period: newPeriod,
-            hour,
-            minutes: 0,
-          });
-                  
-            await createAvailableSession.mutateAsync({
-              date: dateUtc,
-              available: true,
-            });
-        }
-      } else {
-        toast({
-          title: "Invalid hour",
-          description: "Please enter a valid hour between 1 and 12.",
-          variant: "destructive",
-        });
-      }
+    if (!newHour || !newPeriod) return;
+
+    const hour = parseInt(newHour, 10);
+    const isValidHour =
+      hour >= constants.MIN_HOUR && hour <= constants.MAX_HOUR;
+
+    if (!isValidHour) {
+      toast({
+        ...pioneerConstants.ADD_SESSION_TOAST_MESSAGES.INVALID_HOUR,
+        variant: "destructive",
+        action: <ToastAction altText="تراجع">رجوع</ToastAction>,
+      });
+      return;
+    }
+
+    const newTime = {
+      hour: newHour.padStart(2, "0"),
+      period: newPeriod,
+    };
+
+    const isTimeDuplicate = times.some(
+      (time) =>
+        time.hour.padStart(2, "0") === newTime.hour &&
+        time.period === newTime.period,
+    );
+
+    if (isTimeDuplicate) {
+      toast({
+        ...pioneerConstants.ADD_SESSION_TOAST_MESSAGES.TIME_EXISTS,
+        variant: "destructive",
+        description:
+          pioneerConstants.ADD_SESSION_TOAST_MESSAGES.TIME_EXISTS.description(
+            Number(newHour),
+            newPeriod,
+          ),
+      });
+      return;
+    }
+
+    try {
+      setTimes((prevTimes) =>
+        [...prevTimes, newTime].sort((a, b) => {
+          const convertTo24h = (time: { hour: string; period: TPeriod }) =>
+            parseInt(time.hour) + (time.period === "PM" ? 12 : 0);
+          return convertTo24h(a) - convertTo24h(b);
+        }),
+      );
+
+      setNewHour("");
+      toast({
+        ...pioneerConstants.ADD_SESSION_TOAST_MESSAGES.TIME_ADDED,
+        description:
+          pioneerConstants.ADD_SESSION_TOAST_MESSAGES.TIME_ADDED.description(
+            Number(newHour),
+            newPeriod,
+          ),
+      });
+
+      const dateUtc = timeHelper.convertUserInputToUTC({
+        date: selectedDate,
+        period: newPeriod,
+        hour,
+        minutes: 0,
+      });
+
+      await createAvailableSession.mutateAsync({
+        date: dateUtc,
+        available: true,
+        time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      });
+
+      toast(pioneerConstants.ADD_SESSION_TOAST_MESSAGES.SESSION_CREATED);
+    } catch (error) {
+      toast({
+        ...pioneerConstants.ADD_SESSION_TOAST_MESSAGES.ERROR,
+        variant: "destructive",
+        action: <ToastAction altText="تراجع">رجوع</ToastAction>,
+      });
     }
   };
 
-  // const removeTime = (index: number) => {
-  //   setTimes(times.filter((_, i) => i !== index));
-  //   toast({
-  //     title: "Time removed",
-  //     description: "The selected time has been removed from the list.",
-  //   });
-  // };
-
-
-if(loading){
-  return <AvailableTimesLoadingSkeleton/>
-}
+  if (loading) {
+    return <AvailableTimesLoadingSkeleton />;
+  }
 
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold">{"الاوفات المتاحة"} </h2>
-      <div className="flex flex-wrap gap-2 w-96">
+      <div className="flex w-96 flex-wrap gap-2">
         {times?.map((time, index) => (
           <div
             key={index}
             className="flex items-center rounded-md bg-secondary p-2 text-secondary-foreground"
           >
             <span>{`${time.period} ${time.hour}:00 `}</span>
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              className="ml-2 h-4 w-4"
-              onClick={() => removeTime(index)}
-            >
-              <X className="h-3 w-3" />
-              <span className="sr-only">Remove time</span>
-            </Button> */}
           </div>
         ))}
-        {times?.length == 0 ?<p> لا يوجد اوقات متاحة </p>:null}
+        {times?.length == 0 ? <p> لا يوجد اوقات متاحة </p> : null}
       </div>
       <div className="flex items-center space-x-2">
         <Input
@@ -163,16 +176,16 @@ if(loading){
 function AvailableTimesLoadingSkeleton() {
   return (
     <div className="space-y-4">
-      <Skeleton className="h-7 w-40" /> 
-      <div className="flex flex-wrap gap-2 w-96">
-      {Array.from({ length: 5 }).map((_, index) => (
-          <Skeleton key={index} className="h-8 w-24 rounded-md" /> 
+      <Skeleton className="h-7 w-40" />
+      <div className="flex w-96 flex-wrap gap-2">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <Skeleton key={index} className="h-8 w-24 rounded-md" />
         ))}
       </div>
       <div className="flex items-center space-x-2">
-        <Skeleton className="h-10 w-20" /> 
-        <Skeleton className="h-10 w-[70px]" /> 
-        <Skeleton className="h-10 w-24" /> 
+        <Skeleton className="h-10 w-20" />
+        <Skeleton className="h-10 w-[70px]" />
+        <Skeleton className="h-10 w-24" />
       </div>
     </div>
   );

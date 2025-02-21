@@ -61,6 +61,7 @@ model Pioneer {
 model AvailableSession {
   id         String   @id @default(uuid())
   date       DateTime @db.Timestamptz
+  time_zone  String
   // startTime  DateTime @db.Timestamptz
   // endTime    DateTime @db.Timestamptz
   available  Boolean
@@ -70,6 +71,8 @@ model AvailableSession {
   bookedSession BookedSession?
 
   version Int @default(1)
+
+  @@unique([pioneer_id, date])
 
   @@index([pioneer_id])
   @@index([date])

@@ -2,8 +2,9 @@ import { z } from "zod";
 
 // Define schema using Zod
 const createAvailableSessionSchema = z.object({
-  date: z.date(),
+  date: z.string(),
   available: z.boolean().default(false),
+  time_zone: z.string(),
 });
 
 

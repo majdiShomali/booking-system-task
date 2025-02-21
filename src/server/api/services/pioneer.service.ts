@@ -1,8 +1,6 @@
-import { startOfDay, endOfDay, startOfMonth, endOfMonth } from "date-fns";
 import { PioneerRepository } from "../repositories/pioneer.repository";
 import type { TPioneer } from "@/types/pioneer.types";
 import type { CreatePioneerFormValues } from "@/schemas/pioneer.schema";
-import { SessionService } from "./session.service";
 
 export class PioneerService {
   // SECTION - pioneer
@@ -18,8 +16,6 @@ export class PioneerService {
     return PioneerRepository.findPioneerByUserId(userId);
   }
 
-
-
   static async getAllPioneers() {
     return PioneerRepository.findAllPioneers();
   }
@@ -29,36 +25,6 @@ export class PioneerService {
     if (!existingPioneer) throw new Error("Profile not found");
 
     return PioneerRepository.updatePioneer(userId, input);
-  }
-
-  static async getCurrentPioneerAvailableDaySession(
-    userId: string,
-    date: Date,
-  ) {
-    const startOfDayUTC = startOfDay(date).toISOString();
-    const endOfDayUTC = endOfDay(date).toISOString();
-    const pioneer = await PioneerRepository.findPioneerByUserId(userId);
-    if (!pioneer) throw new Error("Could not find pioneer");
-    return SessionService.getPioneerAvailableSessions(
-      { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
-      pioneer.id,
-    );
-  }
-
-  static async getCurrentPioneerAvailableMonthSession(
-    userId: string,
-    date: Date,
-  ) {
-    const startOfDayUTC = startOfMonth(date).toISOString();
-    const endOfDayUTC = endOfMonth(date).toISOString();
-    const pioneer = await PioneerRepository.findPioneerByUserId(userId);
-
-    if (!pioneer) throw new Error("Could not find pioneer");
-
-    return SessionService.getPioneerAvailableSessions(
-      { startOfDay: startOfDayUTC, endOfDay: endOfDayUTC },
-      pioneer.id,
-    );
   }
 
   // SECTION - User

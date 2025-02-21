@@ -1,38 +1,38 @@
+import constants from "@/constants/constants";
 import type { TPeriod } from "@/types/types";
-import { format } from "date-fns";
+import { toZonedTime , format as tzFormat,fromZonedTime } from 'date-fns-tz';
 
-const convertUserInputToUTC = (data: {
-  date: Date | string;
-  period: "AM" | "PM";
-  hour: number;
-  minutes: number;
-}) => {
-  const selectedDate = new Date(data.date);
-  const formattedHour =
-    data.period === "PM" && data.hour !== 12
-      ? data.hour + 12
-      : data.hour === 12 && data.period === "AM"
-        ? 0
-        : data.hour;
-  selectedDate.setHours(formattedHour, data.minutes, 0, 0);
-  const utcDate = new Date(selectedDate.toISOString());
-  return utcDate;
-};
-const convertLocalDateToUTC = (date: Date) => {
-  const utcDate = new Date(date.toISOString());
-  return utcDate;
+const convertUserInputToUTC = ({ date, period, hour, minutes }: { date: Date | string; period: TPeriod; hour: number; minutes: number }) => {
+  const selectedDate = new Date(date);
+  const formattedHour = period === "PM" && hour !== constants.MAX_HOUR  ? hour + constants.MAX_HOUR : hour === constants.MAX_HOUR && period === "AM" ? 0 : hour;
+  selectedDate.setHours(formattedHour, minutes, 0, 0);
+  return fromZonedTime(selectedDate, Intl.DateTimeFormat().resolvedOptions().timeZone).toISOString();
 };
 
 const convertDateToTime = (date: Date | string) => {
   const newDate = new Date(date);
-  const hours = format(newDate, "hh");
-  const ampm = format(newDate, "a") as TPeriod;
+  const hours = tzFormat(newDate, "hh");
+  const ampm = tzFormat(newDate, "a") as TPeriod;
   return { hours, ampm };
 };
 
+const toUTCDate = (date: Date): Date => {
+  const viewerTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return fromZonedTime(date, viewerTimeZone);
+};
+const convertEventTimeToLocalTime = (eventTimeUTC:string | Date)=>{
+const viewerTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const viewerLocalTime = toZonedTime(eventTimeUTC, viewerTimeZone);
+const viewerTimeFormatted = tzFormat(viewerLocalTime, 'yyyy-MM-dd HH:mm zzz', { timeZone: viewerTimeZone });
+return  viewerTimeFormatted
+}
+
+
+
 const timeHelper = {
   convertUserInputToUTC,
-  convertLocalDateToUTC,
   convertDateToTime,
+  toUTCDate,
+  convertEventTimeToLocalTime,
 }
 export default timeHelper ;

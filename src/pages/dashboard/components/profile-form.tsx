@@ -1,6 +1,6 @@
 "use client";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -49,6 +49,10 @@ export default function ProfileForm({
     CreatePioneerFormValues | UpdatePioneerFormValues
   >(initialData ?? createPioneerInitialData);
 
+  console.log("formData")
+  console.log(formData)
+  console.log("formData")
+
   const [loading, setLoading] = useState(false);
 
   const [errors, setErrors] =
@@ -63,15 +67,26 @@ export default function ProfileForm({
     }
   }, [initialData]);
 
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value, type } = e.target;
+    const updatedValue = type === "number" ? (value === "" ? "" : Number(value)) : value;
+    updateFormData(name, updatedValue);
+  };
+  
+  const updateFormData = (name: string, value: number | string | string[]) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "number" ? (value === "" ? "" : Number(value)) : value,
+      [name]: value,
     }));
   };
+  
+  const handleMultiTextInputChange = useCallback((name: string, value: string[]) => {
+    updateFormData(name, value);
+  },[]);
+  
 
   const handleCheckboxChange = (checked: boolean) => {
     setFormData((prev) => ({ ...prev, available: checked }));
@@ -249,16 +264,11 @@ export default function ProfileForm({
               </div>
             </div>
             <MultiTextInput
-              initialData={
-                formData.additional_information?.map((value, id) => {
-                  return { id, value };
-                }) ?? []
-              }
+              initialData={formData.additional_information ?? []}
               title="معلومات اضافية"
-              onChange={(data) => {
-                setFormData((prev) => {
-                  return { ...prev, additional_information: data };
-                });
+              name="additional_information"
+              onChange={(name,value) => {
+                handleMultiTextInputChange(name,value)
               }}
             />
           </section>

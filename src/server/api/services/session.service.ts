@@ -16,22 +16,23 @@ export class SessionService  {
       {
         date: input.date,
         available: input.available,
+        time_zone: input.time_zone
       },
       pioneer.id,
     );
   }
 
     // SECTION - user
-    static async getPioneerAvailableMonthSessionForUser(pioneerId: string, date: Date) {
-      const startOfCurrentDayUTC = startOfDay(new Date()).toISOString();
+    static async getPioneerAvailableMonthSession(pioneerId: string, date: string) {
+      const startOfCurrentDayUTC = startOfDay(date).toISOString();
       const endOfMonthUTC = endOfMonth(date).toISOString();
       return SessionRepository.findPioneerAvailableSessions(
         { startDate: startOfCurrentDayUTC, endDate: endOfMonthUTC },
         pioneerId,
       );
     }
-    static async getPioneerAvailableDaySessionForUser(pioneerId: string, date: Date) {
-      const startOfDayUTC = startOfDay(new Date()).toISOString();
+    static async getPioneerAvailableDaySession(pioneerId: string, date: string) {
+      const startOfDayUTC = startOfDay(date).toISOString();
       const endOfDayUTC = endOfDay(date).toISOString();
       return SessionRepository.findPioneerAvailableSessions(
         { startDate: startOfDayUTC, endDate: endOfDayUTC },

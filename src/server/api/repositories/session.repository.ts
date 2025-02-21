@@ -1,29 +1,62 @@
 import { type CreateAvailableSessionFormValues } from "@/schemas/available-session.schema";
 import { db } from "@/server/db";
-// setInterval(async () => {
-//   await db.bookedSession.deleteMany({
-//     where: {
-//       status: 'PENDING',
-//       createdAt: { lt: new Date(Date.now() - 15*60*1000) } // 15min expiration
-//     }
-//   });
-// }, 5*60*1000); // Run every 5 minutes
+import cron from 'node-cron';
+
+
+cron.schedule('*/5 * * * *', () => {
+  (async () => {
+    try {
+      const expiredSessions = await db.availableSession.findMany({
+        where: {
+          date: {
+            lt: new Date(),
+          },
+          available: true,
+        },
+      });
+
+      if (expiredSessions.length > 0) {
+        await db.availableSession.updateMany({
+          where: {
+            id: {
+              in: expiredSessions.map(session => session.id),
+            },
+          },
+          data: {
+            available: false,
+          },
+        });
+
+        console.log(`${expiredSessions.length} sessions marked as unavailable.`);
+      } else {
+        console.log('No expired sessions found.');
+      }
+    } catch (error) {
+      console.error('Error updating sessions:', error);
+    }
+  })();
+});
+
+
+
+
+
 export class SessionRepository {
   static async createAvailableSession(
     data: CreateAvailableSessionFormValues,
     pioneerId: string,
   ) {
-    // const overlapping = await db.availableSession.findFirst({
-    //   where: {
-    //     pioneer_id: pioneerId,
-    //     OR: [
-    //       { startTime: { lte: newStart }, endTime: { gte: newStart } },
-    //       { startTime: { lte: newEnd }, endTime: { gte: newEnd } }
-    //     ]
-    //   }
-    // });
+    const existingSession = await db.availableSession.findUnique({
+      where: {
+        pioneer_id_date: {
+          pioneer_id: pioneerId,
+          date: data.date,
+        },
+      },
+    });
+    if (existingSession) throw new Error(`Session already exists`)
     return db.availableSession.create({
-      data: { ...data, pioneer_id: pioneerId },
+      data: { ...data, pioneer_id: pioneerId,date:new Date(data.date) },
     });
   }
 

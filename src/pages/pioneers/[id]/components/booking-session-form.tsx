@@ -10,28 +10,7 @@ import type { AvailableSession } from "@prisma/client";
 import useBookingSocket from "@/hooks/use-booking-socket";
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-const usePioneerData = (pioneerId: string, selectedMonth: Date) => {
-  const { data: pioneerAvailableMonthSession } =
-    api.session.getPioneerAvailableMonthSessionForUser.useQuery(
-      {
-        date: timeHelper.convertLocalDateToUTC(selectedMonth),
-        pioneer_id: pioneerId,
-      },
-      { enabled: Boolean(selectedMonth && pioneerId) },
-    );
 
-  const { data: pioneer, isLoading: isPioneerLoading } =
-    api.pioneer.getPioneerForUser.useQuery(
-      { pioneer_id: pioneerId },
-      { enabled: Boolean(pioneerId) },
-    );
-
-  return {
-    pioneerAvailableMonthSession,
-    pioneer,
-    isPioneerLoading,
-  };
-};
 const BookSessionForm = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -40,8 +19,21 @@ const BookSessionForm = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
 
-  const { pioneerAvailableMonthSession, pioneer, isPioneerLoading } =
-    usePioneerData(pioneerId, selectedMonth);
+  const { data: pioneerAvailableMonthSession } =
+    api.session.getCurrentPioneerAvailableMonthSession.useQuery(
+      {
+        date: timeHelper.toUTCDate(selectedMonth)?.toISOString(),
+        pioneer_id: pioneerId,
+      },
+      { enabled: !!selectedDate && !!pioneerId },
+    );
+
+  const { data: pioneer, isLoading: isPioneerLoading } =
+    api.pioneer.getPioneerForUser.useQuery(
+      { pioneer_id: pioneerId },
+      { enabled: !!selectedDate && !!pioneerId },
+    );
+
 
   const handleSelectDate = useCallback((date: Date) => {
     setSelectedDate(date);
@@ -54,7 +46,7 @@ const BookSessionForm = () => {
       if (!selectedSession) return;
 
       try {
-       await bookingAction.mutateAsync({
+        await bookingAction.mutateAsync({
           availableSessionId: selectedSession.id,
         });
         toast({
@@ -96,6 +88,9 @@ const BookSessionForm = () => {
         <TimeSlots
           availableSlots={availableSession?.map((session) => ({
             ...session,
+            date: new Date(
+              timeHelper.convertEventTimeToLocalTime(session.date),
+            ),
           }))}
           onBooking={handleBooking}
           loading={isSessionLoading}

@@ -43,6 +43,11 @@ Create a `.env` file in the root directory and add the following:
 
 ```sh
 DATABASE_URL="postgresql://postgres:1234@localhost:5432/booking-system-task"
+NEXTAUTH_URL=http://localhost:3000
+SOCKET_PORT=5555
+NEXTAUTH_SECRET=your-secure-secret-key
+NEXT_PUBLIC_URL = http://localhost:3000
+NEXT_PUBLIC_SOCKET_PORT = 5555
 ```
 
 #### 2️⃣ Push Database Schema

@@ -86,6 +86,17 @@ const Calendar: React.FC<CalendarProps> = ({
     return events.some((event) => event.toDateString() === date.toDateString());
   };
 
+  function mergeDateAndTime(selectedDate: Date, currentDate: Date) {
+    return new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      currentDate.getHours(),
+      currentDate.getMinutes(),
+      currentDate.getSeconds(),
+      currentDate.getMilliseconds()
+    );
+  }
   return (
     <Card className="rtl mx-auto w-full max-w-md space-y-4 p-3">
       <div className="space-y-2 text-center">
@@ -119,7 +130,7 @@ const Calendar: React.FC<CalendarProps> = ({
         {days.map((day, index) => (
           <Button
             key={index}
-            onClick={() => onDateSelect?.(day.date)}
+            onClick={() => onDateSelect?.(mergeDateAndTime(day.date,new Date()))}
             disabled={!day.isCurrentMonth}
             variant={"outline"}
             className={cn(

@@ -16,6 +16,15 @@ export const sessionRouter = createTRPCRouter({
 
     
   // SECTION - user - pioneer
+  getCurrentPioneerAvailableMonthSession: protectedProcedure
+  .input(z.object({ date: z.string(),pioneer_id:z.string() }))
+  .query(async ({  input }) => {
+    return SessionService.getPioneerAvailableMonthSession(
+      input.pioneer_id,
+      input.date,
+    );
+  }),
+  
   getCurrentPioneerAvailableDaySession: protectedProcedure
     .input(z.object({ date: z.string(),pioneer_id:z.string() }))
     .query(async ({ input }) => {
@@ -25,14 +34,7 @@ export const sessionRouter = createTRPCRouter({
       );
     }),
 
-  getCurrentPioneerAvailableMonthSession: protectedProcedure
-    .input(z.object({ date: z.string(),pioneer_id:z.string() }))
-    .query(async ({  input }) => {
-      return SessionService.getPioneerAvailableMonthSession(
-        input.pioneer_id,
-        input.date,
-      );
-    }),
+
 
 
 

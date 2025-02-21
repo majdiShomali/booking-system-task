@@ -1,8 +1,6 @@
 import { Server } from "socket.io";
 import http from "http";
 import { exec } from "child_process";
-// import { BookingService } from "./api/services/booking.service";
-// import { BookingStatus } from "@prisma/client";
 
 const server = http.createServer();
 
@@ -39,7 +37,6 @@ const handleSignal = async (signal: string) => {
   await cleanUp();
 };
 
-// Use an inline wrapper function to handle the promise correctly
 process.on("SIGINT", () => {
   handleSignal("SIGINT").catch((error) => {
     console.error("Error handling SIGINT:", error);
@@ -83,10 +80,10 @@ io.on("connection", (socket) => {
 // Start the server
 const PORT = Number(process.env.NEXT_PUBLIC_SOCKET_PORT ?? '5555');
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`Socket.IO server running on ${process.env.NEXT_PUBLIC_URL}${PORT}`);
+  console.log(`Socket.IO server running on http://${process.env.NEXT_PUBLIC_HOST}:${PORT}`);
 });
 
-// Handle address in use error
+
 server.on("error", (e: { code: string }) => {
   if (e?.code === "EADDRINUSE") {
     console.log(

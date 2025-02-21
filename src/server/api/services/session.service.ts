@@ -1,7 +1,7 @@
 import type { CreateAvailableSessionFormValues } from "@/schemas/available-session.schema";
 import { PioneerRepository } from "../repositories/pioneer.repository";
 import { SessionRepository } from "../repositories/session.repository";
-import { startOfDay, endOfDay, endOfMonth } from "date-fns";
+import { startOfDay, endOfDay, endOfMonth, startOfMonth } from "date-fns";
 
 export class SessionService  {
 
@@ -24,7 +24,7 @@ export class SessionService  {
 
     // SECTION - user
     static async getPioneerAvailableMonthSession(pioneerId: string, date: string) {
-      const startOfCurrentDayUTC = startOfDay(date).toISOString();
+      const startOfCurrentDayUTC = startOfMonth(date).toISOString();
       const endOfMonthUTC = endOfMonth(date).toISOString();
       return SessionRepository.findPioneerAvailableSessions(
         { startDate: startOfCurrentDayUTC, endDate: endOfMonthUTC },

@@ -48,6 +48,7 @@ SOCKET_PORT=5555
 NEXTAUTH_SECRET=your-secure-secret-key
 NEXT_PUBLIC_URL = http://localhost:3000
 NEXT_PUBLIC_SOCKET_PORT = 5555
+NEXT_PUBLIC_HOST = localhost
 ```
 
 #### 2️⃣ Push Database Schema

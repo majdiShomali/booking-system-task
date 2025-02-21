@@ -26,8 +26,9 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
 
   useEffect(() => {
     if (pioneerId && selectedDate) {
+      const PORT = Number(process.env.NEXT_PUBLIC_SOCKET_PORT ?? '5555');
       const socketIo = io(
-        process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:5555",
+        `http://${process.env.NEXT_PUBLIC_HOST}:${PORT}`,
       );
 
       socketIo.on("connect", () => {

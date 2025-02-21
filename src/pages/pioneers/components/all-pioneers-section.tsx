@@ -1,15 +1,9 @@
-"use client";
 import { api } from "@/utils/api";
-import type React from "react";
-import { useSession } from "next-auth/react";
-import PioneerCard, {
-  PioneerCardSkeleton,
-  PrivatePioneerCard,
-} from "./pioneer-card";
+import PioneerCard, { PioneerCardSkeleton, PrivatePioneerCard } from "./pioneer-card";
+import { Session } from "next-auth";
 
-const AllPioneers: React.FC = () => {
-  const { data: session } = useSession();
-
+const AllPioneers: React.FC<{ session: Session }> = ({ session }) => {
+  
   const { data: pioneers, isLoading } = api.pioneer.getAll.useQuery();
 
   if (!session?.user?.id) {

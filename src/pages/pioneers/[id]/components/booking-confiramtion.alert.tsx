@@ -36,7 +36,7 @@ const BookConfirmationAlert: React.FC<Props> = ({
     <AlertDialog open={open} onOpenChange={(value) => setOpen(value)}>
       <Button
         onClick={() => setOpen(true)}
-        disabled={!session?.id || isDisabled}
+        disabled={!session?.id || isDisabled || !session.available}
         className="w-full"
       >
         حجز جلسة

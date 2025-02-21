@@ -1,5 +1,4 @@
 "use client";
-
 import { memo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -100,7 +99,7 @@ const TimeSlots: React.FC<TimeSlotsProps> = ({
           onBooking={onBooking}
           session={selectedSession}
           loading={isBooking}
-          isDisabled={!availableSlots?.find((slot)=>slot.id ===selectedSession?.id)}
+          isDisabled={!availableSlots?.find((slot)=>slot.id ===selectedSession?.id)?.available}
         />
       </div>
     </Card>

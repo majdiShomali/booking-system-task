@@ -7,7 +7,7 @@ import io from "socket.io-client";
 const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket | null>(null);
   const [sessionStatus, setSessionStatus] = useState<string | null>(null);
-  const [availableSession, setAvailableSessions] = useState<
+  const [availableSessions, setAvailableSessions] = useState<
     AvailableSession[] | null
   >(null);
 
@@ -29,8 +29,9 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
       const PORT = Number(process.env.NEXT_PUBLIC_SOCKET_PORT ?? "5555");
       const socketUrl =
         process.env.NODE_ENV === "production"
-          ? `https://${process.env.NEXT_PUBLIC_HOST}:${process.env.SOCKET_PORT}`
-          : `http://${process.env.NEXT_PUBLIC_HOST}:${process.env.SOCKET_PORT}`;
+          ? `https://${process.env.NEXT_PUBLIC_HOST}:${process.env.NEXT_PUBLIC_SOCKET_PORT}`
+          : `http://${process.env.NEXT_PUBLIC_HOST}:${process.env.NEXT_PUBLIC_SOCKET_PORT}`;
+
       const socketIo = io(socketUrl);
 
       socketIo.on("connect", () => {
@@ -62,9 +63,9 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
         socketIo.disconnect();
       };
     }
-  }, [pioneerId, selectedDate, availableSession]);
+  }, [pioneerId, selectedDate, availableSessions]);
 
-  return { socket, sessionStatus, availableSession, isSessionLoading };
+  return { socket, sessionStatus, availableSessions, isSessionLoading };
 };
 
 export default useBookingSocket;

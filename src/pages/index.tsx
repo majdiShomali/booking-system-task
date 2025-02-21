@@ -1,17 +1,27 @@
+import { GetServerSideProps } from "next";
+import { getServerSession, Session } from "next-auth";
 
-import { Metadata } from "next";
 import AllPioneers from "./pioneers/components/all-pioneers-section";
 import MainHeroSection from "@/components/hero/main-hero-section.";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 
-export default function Home() {
+export default function Home({ session }: { session: Session }) {
+  
   return (
     <section className="h-full w-full">
       <MainHeroSection />
 
       <div className="flex w-full items-center justify-center py-5">
-        <AllPioneers />
+        <AllPioneers session={session} />
       </div>
     </section>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  return {
+    props: { session },
+  };
+};

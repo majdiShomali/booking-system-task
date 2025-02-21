@@ -65,7 +65,7 @@ const BookSessionForm = () => {
     [bookingAction],
   );
 
-  const { isSessionLoading, availableSession } = useBookingSocket(
+  const { isSessionLoading, availableSessions } = useBookingSocket(
     pioneerId,
     selectedDate,
   );
@@ -85,7 +85,7 @@ const BookSessionForm = () => {
         />
 
         <TimeSlots
-          availableSlots={availableSession?.map((session) => ({
+          availableSlots={availableSessions?.map((session) => ({
             ...session,
             date: new Date(
               timeHelper.convertEventTimeToLocalTime(session.date),

@@ -1,6 +1,8 @@
 
-import AllPioneers from "./pioneers/components/all-pioneers";
+import { Metadata } from "next";
+import AllPioneers from "./pioneers/components/all-pioneers-section";
 import MainHeroSection from "@/components/hero/main-hero-section.";
+
 
 export default function Home() {
   return (

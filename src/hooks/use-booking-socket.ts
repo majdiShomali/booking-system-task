@@ -26,10 +26,12 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
 
   useEffect(() => {
     if (pioneerId && selectedDate) {
-      const PORT = Number(process.env.NEXT_PUBLIC_SOCKET_PORT ?? '5555');
-      const socketIo = io(
-        `http://${process.env.NEXT_PUBLIC_HOST}:${PORT}`,
-      );
+      const PORT = Number(process.env.NEXT_PUBLIC_SOCKET_PORT ?? "5555");
+      const socketUrl =
+        process.env.NODE_ENV === "production"
+          ? `https://${process.env.NEXT_PUBLIC_HOST}:${process.env.SOCKET_PORT}`
+          : `http://${process.env.NEXT_PUBLIC_HOST}:${process.env.SOCKET_PORT}`;
+      const socketIo = io(socketUrl);
 
       socketIo.on("connect", () => {
         console.log("Connected to Socket.IO server 🪧");
@@ -38,15 +40,13 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
       socketIo.on("session_booked", (data: AvailableSession) => {
         setSessionStatus(`Session ${data.id} has been booked!`);
         setAvailableSessions((prev) => {
-          const prevSessions = prev? [...prev] : [];
+          const prevSessions = prev ? [...prev] : [];
           return prevSessions?.map((prevSession) => {
-            
             if (prevSession.id === data.id) {
-  
-              return {...prevSession, available: false };
+              return { ...prevSession, available: false };
             }
             return prevSession;
-          })
+          });
         });
       });
 
@@ -62,7 +62,7 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
         socketIo.disconnect();
       };
     }
-  }, [pioneerId, selectedDate,availableSession]);
+  }, [pioneerId, selectedDate, availableSession]);
 
   return { socket, sessionStatus, availableSession, isSessionLoading };
 };

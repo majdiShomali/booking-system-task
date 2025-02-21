@@ -20,22 +20,19 @@ const BookSessionForm = () => {
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
 
   const { data: pioneer, isLoading: isPioneerLoading } =
-  api.pioneer.getPioneerForUser.useQuery(
-    { pioneer_id: pioneerId },
-    { enabled: !!selectedDate && !!pioneerId },
-  );
+    api.pioneer.getPioneerForUser.useQuery(
+      { pioneer_id: pioneerId },
+      { enabled: !!selectedDate && !!pioneerId },
+    );
 
   const { data: pioneerAvailableMonthSession } =
     api.session.getCurrentPioneerAvailableMonthSession.useQuery(
       {
         date: timeHelper.toUTCDate(selectedMonth)?.toISOString(),
-        pioneer_id: pioneer?.id ??'',
+        pioneer_id: pioneer?.id ?? "",
       },
       { enabled: !!selectedDate && !!pioneer?.id },
     );
-
-
-
 
   const handleSelectDate = useCallback((date: Date) => {
     setSelectedDate(date);

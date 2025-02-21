@@ -18,7 +18,7 @@ const Navbar = () => {
         }
         className="flex items-center justify-start gap-2 overflow-hidden rounded-md lg:w-1/3"
       >
-        <Image
+        {/* <Image
           src={"/Qpioneers.png"}
           alt="Qpioneers"
           title="Qpioneers"
@@ -26,7 +26,7 @@ const Navbar = () => {
           height={30}
           className="rounded-r-lg"
           style={{ width: "auto", height: "auto" }}
-        />
+        /> */}
 
         <p className="text-lg font-semibold uppercase">{siteConfig.name}</p>
       </Link>

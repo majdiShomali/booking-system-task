@@ -5,7 +5,7 @@ import { siteConfig } from "@/config/site";
 export function SpotlightPreview() {
 
   return (
-    <div className="h-full w-full rounded-md flex md:items-center md:justify-center bg-secondary antialiased bg-grid-white/[0.02] relative overflow-hidden">
+    <div className="h-full w-full rounded-md flex md:items-center md:justify-center bg-gradient-to-br from-accent via-transparent to-accent antialiased bg-grid-white/[0.02] relative overflow-hidden">
       <Spotlight
         className="-top-40 left-0 md:left-60 md:-top-20"
         fill="white"
@@ -14,8 +14,11 @@ export function SpotlightPreview() {
         <h1 className="h-fit py-5 text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-primary to-primary/50 bg-opacity-50">
           {siteConfig.name}. <br />
         </h1>
-        <p className="mt-4 font-normal text-base max-w-lg text-center mx-auto">
-         {siteConfig.description}
+        <p className="mt-4 font-normal text-xl max-w-lg text-center mx-auto">
+         {siteConfig.description[0]}
+        </p>
+        <p className="mt-4 font-normal text-lg max-w-lg text-center mx-auto">
+         {siteConfig.description[1]}
         </p>
       </div>
     </div>

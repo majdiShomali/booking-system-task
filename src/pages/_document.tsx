@@ -15,6 +15,8 @@ class MyDocument extends Document {
         <Head>
           <meta charSet="UTF-8" />
           <link rel="icon" href="/favicon.ico" />
+          <meta name="title" content="title" />
+
         </Head>
         <body className=" h-screen overflow-y-auto custom-scrollbar ">
           <Main />

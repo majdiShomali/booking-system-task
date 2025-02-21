@@ -21,6 +21,7 @@ import { api } from "@/utils/api";
 import { signIn, useSession } from "next-auth/react";
 import { ERole } from "@prisma/client";
 import ValidationErrorBlock from "@/components/ui/validation-error-block";
+import { siteConfig } from "@/config/site";
 
 const SignUpForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -222,7 +223,7 @@ const SignUpForm: React.FC = () => {
         <p className="text-sm font-light">
           {"لديك حساب ؟"}
           <Link
-            href={`/auth/login`}
+            href={siteConfig.pages.login}
             className="px-2 font-medium text-primary hover:underline"
           >
             {"تسجيل الدخول"}

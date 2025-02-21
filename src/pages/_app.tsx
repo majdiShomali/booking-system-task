@@ -1,20 +1,28 @@
 import { type AppType } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { GeistSans } from "geist/font/sans";
 import { api } from "@/utils/api";
 import "@/styles/globals.css";
 import Navbar from "@/components/headers/nav";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/providers/toast-provider";
+import { Cairo } from "next/font/google"; 
+import { Metadata } from "next";
+
 interface AppProps {
   session: Session | null;
 }
+const cairo = Cairo({
+  subsets: ["latin"],
+  weight: ["400", "700"], 
+  variable: "--font-cairo", 
+});
+
 
 const MyApp: AppType<AppProps> = ({ Component, pageProps }) => {
   return (
     <div
-      className={`h-full w-full  ${GeistSans.className}`}
+      className={`h-full w-full  ${cairo.variable} font-cairo`}
     >
       <SessionProvider session={pageProps.session}>
         <ThemeProvider

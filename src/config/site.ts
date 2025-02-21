@@ -2,8 +2,10 @@ export const siteConfig = {
   name: "المستشار",
   url: "",
   ogImage: "",
-  description:
-    "ابداء رحلتك مع المستشار ",
+  description:[
+    " ابداء رحلتك مع المستشار ",
+   " احصل على استشارة خبير في أي وقت وأي مكان"],
+
   links: {
     twitter: "",
     github: "",
@@ -17,8 +19,8 @@ export const siteConfig = {
     },
     USER:{
       home:"/",
-      profile:"/profile"
-
+      profile:"/profile",
+      pioneers:"/pioneers"
     }
   }
 }

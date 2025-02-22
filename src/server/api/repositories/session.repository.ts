@@ -1,45 +1,5 @@
 import { type CreateAvailableSessionFormValues } from "@/schemas/available-session.schema";
 import { db } from "@/server/db";
-import cron from 'node-cron';
-
-
-cron.schedule('*/5 * * * *', () => {
-  (async () => {
-    try {
-      const expiredSessions = await db.availableSession.findMany({
-        where: {
-          date: {
-            lt: new Date(),
-          },
-          available: true,
-        },
-      });
-
-      if (expiredSessions.length > 0) {
-        await db.availableSession.updateMany({
-          where: {
-            id: {
-              in: expiredSessions.map(session => session.id),
-            },
-          },
-          data: {
-            available: false,
-          },
-        });
-
-        console.log(`${expiredSessions.length} sessions marked as unavailable.`);
-      } else {
-        console.log('No expired sessions found.');
-      }
-    } catch (error) {
-      console.error('Error updating sessions:', error);
-    }
-  })();
-});
-
-
-
-
 
 export class SessionRepository {
   static async createAvailableSession(

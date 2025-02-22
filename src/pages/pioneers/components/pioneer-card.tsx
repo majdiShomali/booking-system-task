@@ -22,9 +22,12 @@ const PioneerCard: React.FC<{ pioneer: TPioneer }> = ({ pioneer }) => {
           <Image
             src={pioneer.user.image ?? "/avatars/01.png"}
             alt={pioneer.user.name}
-            layout="fill"
-            objectFit="cover"
+            // layout="fill"
+            // objectFit="cover"
             className="transition-transform hover:scale-105"
+            style={{ objectFit: 'cover' }}
+            fill
+
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
@@ -33,13 +36,13 @@ const PioneerCard: React.FC<{ pioneer: TPioneer }> = ({ pioneer }) => {
               <p className="text-sm">{pioneer.title}</p>
             </div>
             {pioneer.available ? (
-              <Badge variant="secondary" className="bg-green-500">
-                <Clock size={12} className="mr-1" />
-                متاح للجلسات
+              <Badge variant="secondary" className="bg-green-500 px-2">
+                <Clock size={12} className="mx-1" />
+                متاح 
               </Badge>
             ) : (
-              <Badge variant="secondary" className="bg-red-500">
-                <Clock size={12} className="mr-1" />
+              <Badge variant="secondary" className="bg-red-500 px-2">
+                <Clock size={12} className="mx-1" />
                 غير متاح
               </Badge>
             )}
@@ -153,8 +156,10 @@ const PrivatePioneerCard: React.FC = () => {
               src={`/avatars/0${i + 1}.png`}
               alt={"Pioneer Avatar"}
               layout="fill"
-              objectFit="cover"
+              // objectFit="cover"
               className="blur-sm transition-transform hover:scale-105"
+              style={{ objectFit: 'cover' }}
+
             />
           </CardHeader>
           <CardContent className="space-y-4 p-4">

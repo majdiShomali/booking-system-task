@@ -13,7 +13,7 @@ interface TimeSlotsProps {
   onBooking: (session: AvailableSession) => Promise<void>;
   availableSlots?: AvailableSession[];
   loading: boolean;
-  isExpired: boolean;
+  disabled: boolean;
   isBooking: boolean;
 }
 import React from "react";
@@ -24,7 +24,7 @@ const TimeSlots: React.FC<TimeSlotsProps> = ({
   onBooking,
   availableSlots,
   loading,
-  isExpired,
+  disabled,
   isBooking
 }) => {
   const [selectedSession, setSelectedSession] =
@@ -45,10 +45,10 @@ const TimeSlots: React.FC<TimeSlotsProps> = ({
            
               <Badge
                 variant={"outline"}
-                className={`text-md ${isExpired ? "text-red-500" : "text-green-500"}`}
+                className={`text-md ${disabled ? "text-red-500" : "text-green-500"}`}
               >
                 <Clock className="ml-2" size={15} />{" "}
-                {isExpired ? "منتهية" : "متاحة"}{" "}
+                {disabled ? "منتهية" : "متاحة"}{" "}
               </Badge>
           
           )}
@@ -73,7 +73,7 @@ const TimeSlots: React.FC<TimeSlotsProps> = ({
                 variant="outline"
                 key={index}
                 onClick={() => handleSelect(session)}
-                disabled={!session.available}
+                disabled={disabled ||!session.available}
                 className={cn(
                   "rounded-lg border px-2 py-1 text-sm font-medium transition-colors",
                   "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
@@ -99,7 +99,7 @@ const TimeSlots: React.FC<TimeSlotsProps> = ({
           onBooking={onBooking}
           session={selectedSession}
           loading={isBooking}
-          isDisabled={!availableSlots?.find((slot)=>slot.id ===selectedSession?.id)?.available}
+          isDisabled={disabled || !availableSlots?.find((slot)=>slot.id ===selectedSession?.id)?.available}
         />
       </div>
     </Card>

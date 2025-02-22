@@ -93,7 +93,7 @@ const BookSessionForm = () => {
           }))}
           onBooking={handleBooking}
           loading={isSessionLoading}
-          isExpired={false}
+          disabled={!pioneer || !pioneer?.available}
           isBooking={bookingAction.isPending}
         />
       </div>

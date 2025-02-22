@@ -32,6 +32,7 @@ export default function ProfileCard({ pioneer, loading = false }: ProfileCardPro
                 width={96}
                 height={96}
                 className="w-24 h-24 rounded-lg object-cover"
+                style={{ objectFit: 'cover' }}
               />
             </div>
             <div className="space-y-1">

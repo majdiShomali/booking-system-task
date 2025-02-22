@@ -3,7 +3,10 @@ import { pioneerRouter } from "@/server/api/routers/pioneer";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 import { sessionRouter } from "./routers/session";
 import { bookingRouter } from "./routers/booking";
+import runCronJob from "../cronJob";
 
+
+runCronJob();
 /**
  * This is the primary router for your server.
  *

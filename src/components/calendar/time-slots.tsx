@@ -64,7 +64,7 @@ const TimeSlots: React.FC<TimeSlotsProps> = ({
             <Skeleton key={index} className="h-10 w-full" />
           ))
         ) : availableSlots && availableSlots?.length > 0 ? (
-          availableSlots?.map((session, index) => {
+          availableSlots?.sort((a, b) => new Date(a.date)?.getTime() - new Date(b.date)?.getTime())?.map((session, index) => {
             const time = `${timeHelper.convertDateToTime(session.date).hours}:00 ${
               timeHelper.convertDateToTime(session.date).ampm
             }`;

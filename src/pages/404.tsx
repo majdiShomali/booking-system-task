@@ -3,7 +3,7 @@ import { siteConfig } from "@/config/site";
 import { Frown, Moon } from "lucide-react";
 import Link from "next/link";
 
-// pages/404.js
+
 export default function Custom404() {
     return (
       <div className="w-full h-screen flex items-center justify-center">

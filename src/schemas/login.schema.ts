@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Define schema using Zod
+
 const loginSchema = z.object({
   email: z.string().trim().email("عنوان البريد الإلكتروني غير صحيح"),
   password: z

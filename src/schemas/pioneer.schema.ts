@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Define schema using Zod
+
 const createPioneerSchema = z.object({
   title: z.string().min(1, "العنوان مطلوب"),
   experience: z.number().min(1, "الخبرة مطلوبة"),

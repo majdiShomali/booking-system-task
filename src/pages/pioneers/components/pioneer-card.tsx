@@ -55,21 +55,21 @@ const PioneerCard: React.FC<{ pioneer: TPioneer }> = ({ pioneer }) => {
             </Badge>
             <div className="flex space-x-2 rtl:space-x-reverse">
               {pioneer.facebook && (
-                <Button variant="ghost" size="icon" asChild>
+                <Button name="Facebook" title="Facebook" variant="ghost" size="icon" asChild>
                   <Link href={pioneer.facebook}>
                     <Facebook className="h-4 w-4" />
                   </Link>
                 </Button>
               )}
               {pioneer.instagram && (
-                <Button variant="ghost" size="icon" asChild>
+                <Button name="Instagram" title="Instagram" variant="ghost" size="icon" asChild>
                   <Link href={pioneer.instagram}>
                     <Instagram className="h-4 w-4" />
                   </Link>
                 </Button>
               )}
               {pioneer.twitter && (
-                <Button variant="ghost" size="icon" asChild>
+                <Button name="Twitter" title="Twitter" variant="ghost" size="icon" asChild>
                   <Link href={pioneer.twitter}>
                     <Twitter className="h-4 w-4" />
                   </Link>
@@ -191,13 +191,13 @@ const PrivatePioneerCard: React.FC = () => {
               </p>
             </div>
             <div className="flex justify-end space-x-2">
-              <Button variant="ghost" size="icon" disabled>
+              <Button name="Facebook" title="Facebook" variant="ghost" size="icon" disabled>
                 <Facebook className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" disabled>
+              <Button  name="Instagram" title="Instagram" variant="ghost" size="icon" disabled>
                 <Instagram className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" disabled>
+              <Button  name="Twitter" title="Twitter" variant="ghost" size="icon" disabled>
                 <Twitter className="h-4 w-4" />
               </Button>
             </div>

@@ -7,7 +7,11 @@ import PioneerCard, {
 import type { Session } from "next-auth";
 
 const AllPioneers: React.FC<{ session: Session }> = ({ session }) => {
-  const { data: pioneers, isLoading } = api.pioneer.getAll.useQuery();
+  const { data: pioneers, isLoading } = api.pioneer.getAll.useQuery(
+    undefined, 
+    { enabled: Boolean(session?.user?.id) }
+  );
+  
 
   if (!session?.user?.id) {
     return <PrivatePioneerCard />;

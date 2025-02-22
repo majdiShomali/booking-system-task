@@ -15,14 +15,10 @@ class MyDocument extends Document {
         <Head>
           <meta charSet="UTF-8" />
           <link rel="icon" href="/favicon.ico" />
-          
-          <title>حجز المستشار</title>
-
           <meta 
             name="description" 
             content="موقع حجز المستشار يقدم لك خدمة حجز استشارات قانونية عبر الإنترنت، مع متخصصين محترفين في مختلف المجالات." 
           />
-
         </Head>
         <body className=" h-screen overflow-y-auto custom-scrollbar ">
           <Main />

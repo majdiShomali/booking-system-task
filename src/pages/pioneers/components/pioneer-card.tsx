@@ -27,7 +27,8 @@ const PioneerCard: React.FC<{ pioneer: TPioneer }> = ({ pioneer }) => {
             className="transition-transform hover:scale-105"
             style={{ objectFit: 'cover' }}
             fill
-
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
@@ -56,23 +57,23 @@ const PioneerCard: React.FC<{ pioneer: TPioneer }> = ({ pioneer }) => {
             <div className="flex space-x-2 rtl:space-x-reverse">
               {pioneer.facebook && (
                 <Button name="Facebook" title="Facebook" variant="ghost" size="icon" asChild>
-                  <Link href={pioneer.facebook}>
+                  <span >
                     <Facebook className="h-4 w-4" />
-                  </Link>
+                  </span>
                 </Button>
               )}
               {pioneer.instagram && (
                 <Button name="Instagram" title="Instagram" variant="ghost" size="icon" asChild>
-                  <Link href={pioneer.instagram}>
+                  <span >
                     <Instagram className="h-4 w-4" />
-                  </Link>
+                  </span>
                 </Button>
               )}
               {pioneer.twitter && (
                 <Button name="Twitter" title="Twitter" variant="ghost" size="icon" asChild>
-                  <Link href={pioneer.twitter}>
+                  <span >
                     <Twitter className="h-4 w-4" />
-                  </Link>
+                  </span>
                 </Button>
               )}
             </div>
@@ -155,11 +156,12 @@ const PrivatePioneerCard: React.FC = () => {
             <Image
               src={`/avatars/0${i + 1}.png`}
               alt={"Pioneer Avatar"}
-              layout="fill"
+              fill
               // objectFit="cover"
               className="blur-sm transition-transform hover:scale-105"
               style={{ objectFit: 'cover' }}
-
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority
             />
           </CardHeader>
           <CardContent className="space-y-4 p-4">

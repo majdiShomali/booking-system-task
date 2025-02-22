@@ -87,6 +87,24 @@ Your application should now be running at `http://localhost:3000/` 🎉.
 
 ---
 
+
+## 🧪 Running Tests
+
+To run tests for different functionalities, follow the instructions below:
+
+### 1. Test Booking Flow
+To test the booking flow, run the following command:
+
+```sh
+npm test booking-flow.test.ts
+```
+### 2. Test Available Sessions
+To test the available sessions for a specific day and specific pioneer, run the following command:
+```sh
+npm test available-sessions.test.ts
+```
+
+
 ## 📜 License
 
 This project is open-source and available under the [MIT License](LICENSE).

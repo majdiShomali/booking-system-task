@@ -1,7 +1,6 @@
 import { createCaller } from "@/server/api/root";
 import { SessionService } from "@/server/api/services/session.service";
 import { db } from "@/server/db";
-
 import type { Session } from "next-auth";
 
 jest.mock("@/server/db.ts", () => ({
@@ -18,34 +17,49 @@ jest.mock("@/server/api/services/session.service.ts", () => ({
   },
 }));
 
-describe("Booking API Unit Tests", () => {
-  it("should return a booking by ID", async () => {
+jest.mock("@/server/socket", () => {
+  const httpServer = {
+    listen: jest.fn(),
+    close: jest.fn(),
+  };
+  return {
+    httpServer,
+    io: {
+      on: jest.fn(),
+    },
+  };
+});
 
+describe("Booking API Unit Tests", () => {
+  it("should return available pioneer sessions within a date range", async () => {
     (SessionService.getPioneerAvailableDaySession as jest.Mock).mockResolvedValue([
       {
         id: "123",
-        userId: "user1",
-        status: "confirmed",
+        date: new Date().toISOString(),
+        time_zone: "UTC",
+        available: true,
+        pioneer_id: "1",
       },
     ]);
 
-
     const mockCtx = {
-      db, 
+      db,
       session: { user: { id: "user1" }, expires: new Date().toISOString() } as Session,
     };
 
-    const caller = createCaller(mockCtx); 
-    const booking = await caller.session.getCurrentPioneerAvailableDaySession({
+    const caller = createCaller(mockCtx);
+    const availableSessions = await caller.session.getCurrentPioneerAvailableDaySession({
       date: new Date().toISOString(),
       pioneer_id: "1",
     });
 
-    expect(booking).toEqual([
+    expect(availableSessions).toEqual([
       {
         id: "123",
-        userId: "user1",
-        status: "confirmed",
+        date: expect.any(String),
+        time_zone: "UTC",
+        available: true,
+        pioneer_id: "1",
       },
     ]);
   });

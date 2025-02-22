@@ -16,8 +16,8 @@ const loginSchema = z.object({
 });
 
 const loginSchemaInitialData = {
-  email: "",
-  password: "",
+  email: "saraahmad@gmail.com",
+  password: "Password@1234",
 };
 
 type LoginFormValues = z.infer<typeof loginSchema>;

@@ -133,7 +133,7 @@ export function AvailableTimes({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">{"الاوفات المتاحة"} </h2>
+      <h2 className="text-lg font-semibold">{"الاوقات المتاحة"}</h2>
       <div className="flex w-96 flex-wrap gap-2">
         {times?.map((time, index) => (
           <div

@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { siteConfig } from "@/config/site";
-import { Frown, Moon, Sun } from "lucide-react";
+import { Frown, Moon } from "lucide-react";
 import Link from "next/link";
 
 // pages/404.js

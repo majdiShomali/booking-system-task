@@ -104,6 +104,23 @@ To test the available sessions for a specific day and specific pioneer, run the 
 npm test available-sessions.test.ts
 ```
 
+## 🧪 Running E2E tests for critical paths Tests using  playwright
+
+```sh
+npx playwright install
+```
+To test the homepage for an unauthorized user, you should see the following error:
+tRPC failed on pioneer.getAll: UNAUTHORIZED
+```sh
+npx playwright test src/tests/hone.spec.ts
+```
+
+
+## 📃 API Documentation
+
+Currently, OpenAPI support is not available in the latest version of tRPC. As a result, I was unable to generate an OpenAPI document for the  API. Instead, I've provided the documentation directly in the comments above each API method inside the server/api/routers directory. These comments describe the functionality and usage of each endpoint.
+
+
 
 ## 📜 License
 

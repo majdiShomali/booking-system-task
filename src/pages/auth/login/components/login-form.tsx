@@ -7,13 +7,16 @@ import { useToast } from "@/hooks/use-toast";
 import SubmitButton from "@/components/ui/submit-button";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
-import {
-  LoginFormValues,
+import  {
   loginSchema,
   loginSchemaInitialData,
 } from "@/schemas/login.schema";
+import type {
+  LoginFormValues,
+} from "@/schemas/login.schema";
 import { Button } from "@/components/ui/button";
-import { getZodErrors, ExtractZODErrors } from "@/schemas";
+import type {  ExtractZODErrors } from "@/schemas";
+import { getZodErrors } from "@/schemas";
 import { siteConfig } from "@/config/site";
 import { signIn, useSession } from "next-auth/react";
 import { ERole } from "@prisma/client";
@@ -29,7 +32,7 @@ const LogInForm: React.FC = () => {
     useState<ExtractZODErrors<LoginFormValues> | null>(null);
   const { toast } = useToast();
 
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
 
   useEffect(() => {

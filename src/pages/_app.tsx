@@ -7,7 +7,6 @@ import Navbar from "@/components/headers/nav";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/providers/toast-provider";
 import { Cairo } from "next/font/google"; 
-import { Metadata } from "next";
 
 interface AppProps {
   session: Session | null;

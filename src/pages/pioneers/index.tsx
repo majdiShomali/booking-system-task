@@ -1,7 +1,8 @@
 import React from "react";
 import AllPioneers from "./components/all-pioneers-section";
-import { GetServerSideProps } from "next";
-import { getServerSession, Session } from "next-auth";
+import type { GetServerSideProps } from "next";
+import type {  Session } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import DemoSection from "@/components/hero/demo-home-section";
 

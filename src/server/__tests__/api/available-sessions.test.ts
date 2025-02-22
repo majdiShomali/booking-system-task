@@ -31,11 +31,12 @@ jest.mock("@/server/socket", () => {
 });
 
 describe("Booking API Unit Tests", () => {
+  const date = new Date();
   it("should return available pioneer sessions within a date range", async () => {
     (SessionService.getPioneerAvailableDaySession as jest.Mock).mockResolvedValue([
       {
         id: "123",
-        date: new Date().toISOString(),
+        date: date.toISOString(),
         time_zone: "UTC",
         available: true,
         pioneer_id: "1",
@@ -56,7 +57,7 @@ describe("Booking API Unit Tests", () => {
     expect(availableSessions).toEqual([
       {
         id: "123",
-        date: expect.any(String),
+        date: date.toISOString(),
         time_zone: "UTC",
         available: true,
         pioneer_id: "1",

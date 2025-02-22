@@ -9,8 +9,10 @@ import { useRouter } from "next/navigation";
 import SubmitButton from "@/components/ui/submit-button";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
-import {
+import type {
   SignupFormValues,
+} from "@/schemas/signup.schema";
+import {
   signupSchema,
   signupSchemaInitialData,
 } from "@/schemas/signup.schema";

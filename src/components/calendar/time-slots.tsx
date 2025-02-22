@@ -17,7 +17,7 @@ interface TimeSlotsProps {
   isBooking: boolean;
 }
 import React from "react";
-import { AvailableSession } from "@prisma/client";
+import type { AvailableSession } from "@prisma/client";
 import timeHelper from "@/helpers/time.helper";
 
 const TimeSlots: React.FC<TimeSlotsProps> = ({

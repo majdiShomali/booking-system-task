@@ -1,4 +1,4 @@
-import { TPeriod } from "@/types/types";
+import type { TPeriod } from "@/types/types";
 
 const ADD_SESSION_TOAST_MESSAGES = {
     TIME_EXISTS: {

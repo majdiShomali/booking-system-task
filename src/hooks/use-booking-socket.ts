@@ -26,7 +26,6 @@ const useBookingSocket = (pioneerId: string, selectedDate: Date) => {
 
   useEffect(() => {
     if (pioneerId && selectedDate) {
-      const PORT = Number(process.env.NEXT_PUBLIC_SOCKET_PORT ?? "5555");
       const socketUrl =
         process.env.NODE_ENV === "production"
           ? `https://${process.env.NEXT_PUBLIC_HOST}:${process.env.NEXT_PUBLIC_SOCKET_PORT}`

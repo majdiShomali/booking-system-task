@@ -7,7 +7,7 @@ import { SessionService } from "./session.service";
 export class BookingService {
   static async bookSession(userId: string, availableSessionId: string) {
     try {
-      const booking = await db.$transaction(async (tx) => {
+      const booking = await db.$transaction(async ( ) => {
         const session =
           await SessionService.findAvailableSessionById(availableSessionId);
         if (!session?.id) {

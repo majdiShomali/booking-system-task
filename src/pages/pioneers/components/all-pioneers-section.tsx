@@ -4,7 +4,7 @@ import PioneerCard, {
   PioneerCardSkeleton,
   PrivatePioneerCard,
 } from "./pioneer-card";
-import { Session } from "next-auth";
+import type { Session } from "next-auth";
 
 const AllPioneers: React.FC<{ session: Session }> = ({ session }) => {
   const { data: pioneers, isLoading } = api.pioneer.getAll.useQuery();

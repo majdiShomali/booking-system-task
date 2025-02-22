@@ -1,6 +1,6 @@
-import { GetServerSideProps } from "next";
-import { getServerSession, Session } from "next-auth";
-
+import type { GetServerSideProps } from "next";
+import {getServerSession } from "next-auth";
+import type {Session } from "next-auth";
 import AllPioneers from "./pioneers/components/all-pioneers-section";
 import MainHeroSection from "@/components/hero/main-hero-section.";
 import { authOptions } from "./api/auth/[...nextauth]";

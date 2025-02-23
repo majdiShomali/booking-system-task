@@ -10,14 +10,16 @@ import type { AvailableSession } from "@prisma/client";
 import useBookingSocket from "@/hooks/use-booking-socket";
 import { toast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-
-const BookSessionForm = () => {
-  const router = useRouter();
-  const { id } = router.query;
-  const pioneerId = typeof id === "string" ? id : "";
-
+type Props = {
+  id: string;
+};
+const BookSessionForm: React.FC<Props> = ({ id: pioneerId }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedMonth, setSelectedMonth] = useState<Date>(new Date());
+
+  const handleSelectDate = useCallback((date: Date) => {
+    setSelectedDate(date);
+  }, []);
 
   const { data: pioneer, isLoading: isPioneerLoading } =
     api.pioneer.getPioneerForUser.useQuery(
@@ -34,9 +36,10 @@ const BookSessionForm = () => {
       { enabled: !!selectedDate && !!pioneer?.id },
     );
 
-  const handleSelectDate = useCallback((date: Date) => {
-    setSelectedDate(date);
-  }, []);
+  const { isSessionLoading, availableSessions } = useBookingSocket(
+    pioneerId,
+    selectedDate,
+  );
 
   const bookingAction = api.booking.bookSession.useMutation();
 
@@ -64,13 +67,6 @@ const BookSessionForm = () => {
     },
     [bookingAction],
   );
-
-  const { isSessionLoading, availableSessions } = useBookingSocket(
-    pioneerId,
-    selectedDate,
-  );
-
-  if (!pioneerId) return null;
 
   return (
     <div className="my-5 flex h-full w-full flex-col items-center justify-center gap-5 lg:flex-row lg:items-start">
